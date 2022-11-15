@@ -1,0 +1,10 @@
+version: '3'
+services:
+    db:
+        image: postgres:15
+        environment:
+            - POSTGRES_PASSWORD=java
+            - POSTGRES_USER=prft
+            - POSTGRES_DB=sraudb
+        ports:
+            - 5432:5432

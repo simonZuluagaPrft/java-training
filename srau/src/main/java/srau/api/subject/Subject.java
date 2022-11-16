@@ -1,11 +1,16 @@
 package srau.api.subject;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import srau.api.course.Course;
 
 @Entity
 @Table
@@ -24,7 +29,10 @@ public class Subject {
     private Long id;
     private String name;
     private String description;
-    
+
+    @OneToMany(mappedBy = "subject")
+    private Set<Course> courses;
+
     public Subject() {
     }
 
@@ -62,5 +70,13 @@ public class Subject {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
 }

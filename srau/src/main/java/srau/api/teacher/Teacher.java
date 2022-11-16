@@ -1,15 +1,21 @@
 package srau.api.teacher;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import srau.api.course.Course;
 
 @Entity
 @Table
 public class Teacher {
+
     @Id
     @SequenceGenerator(
         name = "teacher_sequence",
@@ -23,7 +29,10 @@ public class Teacher {
     private Long id;
     private String name;
     private String email;
-    
+
+    @OneToMany(mappedBy = "teacher")
+    private Set<Course> courses;
+
     public Teacher() {
     }
 
@@ -61,5 +70,13 @@ public class Teacher {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+   
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
 }

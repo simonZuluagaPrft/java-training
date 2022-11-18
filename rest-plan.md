@@ -9,17 +9,20 @@ get student report card
 
 CRUD teacher
 grade a student (through a course)
+change a student grade (through a course)
 
 CRUD subject
 
-CRUD course
-enroll student in a course
+create course
+delete course
 drop student from a course
 get students that passed the course
 get students that failed the course
 get students enrolled in the course
 
-CRUD class
+CRUD lecture
+
+CRUD grade
 
 ---
 # Routing
@@ -31,19 +34,19 @@ GET     read student
 PUT     update student
 DELETE  delete student
 
-student/courses
+student/{id}/courses
 GET     get courses enrolled by the student
 
-student/subjects
+student/{id}/subjects
 GET     get subjects the student is studying
 
-student/grades
+student/{studentId}/grades/{courseId}
 GET     get student's grade for a course
 
-student/schedule
+student/{id}/schedule
 GET     get student's schedule
 
-student/reportCard
+student/{id}/reportCard
 GET     get student's reportCard
 
 teacher/
@@ -54,7 +57,7 @@ GET     read teacher
 PUT     update teacher
 DELETE  delete teacher
 
-teacher/grade
+teacher/{teacherId}/grade
 POST    grade a student
 PUT     update a students grade
 
@@ -76,4 +79,17 @@ DELETE  delete subject
 
 course/enroll
 POST    enroll student in a course
+
+
+--- Esta bien estructurado este uri? Hay mejor manera de plantear el endpoint?
+course/{id}/student/{studentId}
 DELETE  drop student from a course
+---
+
+lecture/
+POST    create lecture
+
+lecture/{id}
+GET     read lecture
+PUT     update lecture
+DELETE  delete lecture

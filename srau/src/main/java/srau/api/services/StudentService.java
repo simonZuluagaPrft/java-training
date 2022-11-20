@@ -1,10 +1,13 @@
-package srau.api.student;
+package srau.api.services;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import srau.api.domain.Student;
+import srau.api.repositories.StudentRepository;
 
 @Service
 public class StudentService {

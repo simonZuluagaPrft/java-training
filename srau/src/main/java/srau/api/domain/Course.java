@@ -1,23 +1,16 @@
-package srau.api.course;
+package srau.api.domain;
 
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
-import srau.api.grade.Grade;
-import srau.api.lecture.Lecture;
-import srau.api.student.Student;
-import srau.api.subject.Subject;
-import srau.api.teacher.Teacher;
 
 @Data
 @Entity
@@ -25,15 +18,7 @@ import srau.api.teacher.Teacher;
 public class Course {
     
     @Id
-    @SequenceGenerator(
-        name = "course_sequence",
-        sequenceName = "course_sequence",
-        allocationSize = 1
-    )
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "course_sequence"
-    )
+    @GeneratedValue
     private Long id;
     private String name;
 

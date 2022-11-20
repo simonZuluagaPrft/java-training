@@ -1,9 +1,12 @@
-package srau.api.subject;
+package srau.api.services;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import srau.api.domain.Subject;
+import srau.api.repositories.SubjectRepository;
 
 @Service
 public class SubjectService {

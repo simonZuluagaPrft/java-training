@@ -1,16 +1,12 @@
-package srau.api.grade;
+package srau.api.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
-import srau.api.course.Course;
-import srau.api.student.Student;
 
 @Data
 @Entity
@@ -18,15 +14,7 @@ import srau.api.student.Student;
 public class Grade {
     
     @Id
-    @SequenceGenerator(
-        name = "grade_sequence",
-        sequenceName = "grade_sequence",
-        allocationSize = 1
-    )
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "grade_sequence"
-    )
+    @GeneratedValue
     private Long id;
     private int score;
     

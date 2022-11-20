@@ -1,4 +1,4 @@
-package srau.api.lecture;
+package srau.api.domain;
 
 import java.time.DayOfWeek;
 
@@ -6,14 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Data;
-import srau.api.course.Course;
 
 @Data
 @Entity
@@ -21,15 +18,7 @@ import srau.api.course.Course;
 public class Lecture {
     
     @Id
-    @SequenceGenerator(
-        name = "lecture_sequence",
-        sequenceName = "lecture_sequence",
-        allocationSize = 1
-    )
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "lecture_sequence"
-    )
+    @GeneratedValue
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private DayOfWeek dayOfWeek;

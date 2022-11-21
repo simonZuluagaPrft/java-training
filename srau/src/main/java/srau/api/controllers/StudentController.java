@@ -9,16 +9,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import srau.api.domain.Student;
+import srau.api.mapstruct.dto.StudentGetDto;
+import srau.api.mapstruct.mapper.MapStructMapper;
 import srau.api.services.StudentService;
 
 @RestController
 @RequestMapping("api/v1/student")
 public class StudentController {
 
+    private MapStructMapper mapStructMapper;
     private final StudentService studentService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(MapStructMapper mapStructMapper, StudentService studentService) {
+        this.mapStructMapper = mapStructMapper;
         this.studentService = studentService;
     }
 
@@ -28,8 +32,9 @@ public class StudentController {
     }
 
     @GetMapping(path = "{studentEmail}")
-    public Object getStudentByEmail(
+    public StudentGetDto getStudentByEmail(
             @PathVariable("studentEmail") String studentEmail) {
-        return studentService.getStudentByEmail(studentEmail);
+        Student student = studentService.getStudentByEmail(studentEmail);
+        return mapStructMapper.studentToStudentGetDto(student);
     }
 }

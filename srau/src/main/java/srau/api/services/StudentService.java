@@ -23,8 +23,8 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Object getStudentByEmail(String studentEmail) {
-        Optional<Object> optStudent = studentRepository.findStudentByEmail(studentEmail);
+    public Student getStudentByEmail(String studentEmail) {
+        Optional<Student> optStudent = studentRepository.findStudentByEmail(studentEmail);
 
         if (!optStudent.isPresent()) {
             throw new IllegalStateException("No student with email: " + studentEmail);

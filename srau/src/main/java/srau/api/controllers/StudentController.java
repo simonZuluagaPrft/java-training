@@ -5,11 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import srau.api.domain.Student;
 import srau.api.mapstruct.dto.StudentGetDto;
+import srau.api.mapstruct.dto.StudentPostDto;
 import srau.api.mapstruct.mapper.MapStructMapper;
 import srau.api.services.StudentService;
 
@@ -37,4 +40,11 @@ public class StudentController {
         Student student = studentService.getStudentByEmail(studentEmail);
         return mapStructMapper.studentToStudentGetDto(student);
     }
+
+    @PostMapping
+    public void createStudent(@RequestBody StudentPostDto studentPostDto) {
+        Student student = mapStructMapper.studentPostDtoToStudent(studentPostDto);
+        studentService.createStudent(student);
+    }
+
 }

@@ -33,4 +33,13 @@ public class StudentService {
         return optStudent.get();
     }
 
+    public void createStudent(Student student) {
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+
+        if (studentOptional.isPresent()) {
+            throw new IllegalStateException("Email taken");
+        }
+        studentRepository.save(student);
+    }
+
 }

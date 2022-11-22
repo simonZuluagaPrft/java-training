@@ -26,10 +26,12 @@ public class StudentService {
     }
 
     public Student getStudentByEmail(String studentEmail) {
-        Optional<Student> optStudent = studentRepository.findStudentByEmail(studentEmail);
+        Optional<Student> optStudent = studentRepository
+                .findStudentByEmail(studentEmail);
 
         if (!optStudent.isPresent()) {
-            throw new IllegalStateException("No student with email: " + studentEmail);
+            throw new IllegalStateException(
+                    "No student with email: " + studentEmail);
         }
 
         return optStudent.get();
@@ -76,7 +78,8 @@ public class StudentService {
         boolean exists = studentRepository.existsById(studentId);
 
         if (!exists) {
-            throw new IllegalStateException("Student with id " + studentId + " does not exists");
+            throw new IllegalStateException(
+                    "Student with id " + studentId + " does not exists");
         }
         studentRepository.deleteById(studentId);
     }

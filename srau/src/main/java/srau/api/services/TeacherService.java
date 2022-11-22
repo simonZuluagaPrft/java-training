@@ -11,7 +11,7 @@ import srau.api.repositories.TeacherRepository;
 
 @Service
 public class TeacherService {
-    
+
     private final TeacherRepository teacherRepository;
 
     @Autowired
@@ -24,7 +24,7 @@ public class TeacherService {
     }
 
     public Teacher getTeacherByEmail(String teacherEmail) {
-        Optional<Teacher> optTeacher = teacherRepository.findStudentByEmail(teacherEmail);
+        Optional<Teacher> optTeacher = teacherRepository.findTeacherByEmail(teacherEmail);
 
         if (!optTeacher.isPresent()) {
             throw new IllegalStateException("No teacher with email: " + teacherEmail);
@@ -32,4 +32,15 @@ public class TeacherService {
 
         return optTeacher.get();
     }
+
+    public void createTeacher(Teacher teacher) {
+        Optional<Teacher> teacherOptional = teacherRepository.findTeacherByEmail(
+                teacher.getEmail());
+
+        if (teacherOptional.isPresent()) {
+            throw new IllegalStateException("Email taken");
+        }
+        teacherRepository.save(teacher);
+    }
+
 }

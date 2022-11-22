@@ -1,6 +1,7 @@
 package srau.api.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,15 @@ public class TeacherService {
 
     public List<Teacher> getTeachers() {
         return teacherRepository.findAll();
+    }
+
+    public Teacher getTeacherByEmail(String teacherEmail) {
+        Optional<Teacher> optTeacher = teacherRepository.findStudentByEmail(teacherEmail);
+
+        if (!optTeacher.isPresent()) {
+            throw new IllegalStateException("No teacher with email: " + teacherEmail);
+        }
+
+        return optTeacher.get();
     }
 }

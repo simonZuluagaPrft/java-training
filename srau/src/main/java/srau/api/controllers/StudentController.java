@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 import srau.api.domain.Student;
 import srau.api.mapstruct.dto.StudentGetDto;
 import srau.api.mapstruct.dto.StudentPostDto;
-import srau.api.mapstruct.mapper.MapStructMapper;
+import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.services.StudentService;
 
 @RestController
 @RequestMapping("api/v1/student")
 public class StudentController {
 
-    private MapStructMapper mapStructMapper;
+    private final StudentMapper studentMapper;
     private final StudentService studentService;
 
     @Autowired
-    public StudentController(MapStructMapper mapStructMapper, StudentService studentService) {
-        this.mapStructMapper = mapStructMapper;
+    public StudentController(StudentMapper studentMapper, StudentService studentService) {
+        this.studentMapper = studentMapper;
         this.studentService = studentService;
     }
 
@@ -41,12 +41,12 @@ public class StudentController {
     public StudentGetDto getStudentByEmail(
             @PathVariable("studentEmail") String studentEmail) {
         Student student = studentService.getStudentByEmail(studentEmail);
-        return mapStructMapper.studentToStudentGetDto(student);
+        return studentMapper.studentToStudentGetDto(student);
     }
 
     @PostMapping
     public void createStudent(@RequestBody StudentPostDto studentPostDto) {
-        Student student = mapStructMapper.studentPostDtoToStudent(studentPostDto);
+        Student student = studentMapper.studentPostDtoToStudent(studentPostDto);
         studentService.createStudent(student);
     }
 

@@ -7,7 +7,7 @@ import srau.api.mapstruct.dto.StudentGetDto;
 import srau.api.mapstruct.dto.StudentPostDto;
 
 @Mapper(componentModel = "spring")
-public interface MapStructMapper {
+public interface StudentMapper {
     
     StudentGetDto studentToStudentGetDto(Student student);
 

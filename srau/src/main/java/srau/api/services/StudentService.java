@@ -61,7 +61,8 @@ public class StudentService {
                 email.length() > 0 &&
                 !Objects.equals(student.getEmail(), email)) {
 
-            Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
+            Optional<Student> studentOptional = studentRepository
+                    .findStudentByEmail(email);
 
             if (studentOptional.isPresent()) {
                 throw new IllegalStateException("email taken");

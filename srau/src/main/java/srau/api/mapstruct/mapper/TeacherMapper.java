@@ -9,7 +9,7 @@ import srau.api.mapstruct.dto.TeacherPostDto;
 @Mapper(componentModel = "spring")
 public interface TeacherMapper {
     
-    TeacherGetDto teacherToStudentGetDto(Teacher teacher);
+    TeacherGetDto teacherToTeacherGetDto(Teacher teacher);
 
     // @Mapping(target = "courses");
     Teacher teacherPostDtoToTeacher(TeacherPostDto teacherPostDto);

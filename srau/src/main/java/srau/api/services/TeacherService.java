@@ -1,7 +1,10 @@
 package srau.api.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,42 @@ public class TeacherService {
             throw new IllegalStateException("Email taken");
         }
         teacherRepository.save(teacher);
+    }
+
+    @Transactional
+    public void updateTeacher(Long teacherId, String name, String email) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "teacher with id " + teacherId + " does not exists"));
+
+        if (name != null &&
+                name.length() > 0 &&
+                !Objects.equals(teacher.getName(), name)) {
+            teacher.setName(name);
+        }
+
+        if (email != null &&
+                email.length() > 0 &&
+                !Objects.equals(teacher.getEmail(), email)) {
+
+            Optional<Teacher> teacherOptional = teacherRepository
+                    .findTeacherByEmail(email);
+
+            if (teacherOptional.isPresent()) {
+                throw new IllegalStateException("email taken");
+            }
+
+            teacher.setEmail(email);
+        }
+    }
+
+    public void deleteTeacher(Long teacherId) {
+        boolean exists = teacherRepository.existsById(teacherId);
+
+        if (!exists) {
+            throw new IllegalStateException("Teacher with id " + teacherId + " does not exists");
+        }
+        teacherRepository.deleteById(teacherId);
     }
 
 }

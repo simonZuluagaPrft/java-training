@@ -29,8 +29,10 @@ CRUD grade
 student/
 POST    create student
 
-student/{id}
+student/{email}
 GET     read student
+
+student/{id}
 PUT     update student
 DELETE  delete student
 
@@ -52,8 +54,10 @@ GET     get student's reportCard
 teacher/
 POST    create teacher
 
-teacher/{id}
+teacher/{email}
 GET     read teacher
+
+teacher/{id}
 PUT     update teacher
 DELETE  delete teacher
 
@@ -64,18 +68,20 @@ PUT     update a students grade
 subject/
 POST    create subject
 
-subject/{id}
+subject/{name}
 GET     read subject
+
+subject/{id}
 PUT     update subject
 DELETE  delete subject
 
 course/
-POST    create subject
+POST    create course
 
 course/{id}
-GET     read subject
-PUT     update subject
-DELETE  delete subject
+GET     read course
+PUT     update course
+DELETE  delete course
 
 course/enroll
 POST    enroll student in a course

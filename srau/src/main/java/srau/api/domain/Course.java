@@ -20,7 +20,6 @@ public class Course {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
 
     @ManyToOne
     private Subject subject;
@@ -39,8 +38,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, Subject subject, Teacher teacher) {
-        this.name = name;
+    public Course(Subject subject, Teacher teacher) {
         this.subject = subject;
         this.teacher = teacher;
     }

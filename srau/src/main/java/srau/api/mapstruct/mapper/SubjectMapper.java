@@ -1,6 +1,7 @@
 package srau.api.mapstruct.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import srau.api.domain.Subject;
 import srau.api.mapstruct.dto.SubjectGetDto;
@@ -11,6 +12,7 @@ public interface SubjectMapper {
     
     SubjectGetDto subjectToSubjectGetDto(Subject subject);
 
-    // @Mapping(target = "courses");
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "courses", ignore = true)
     Subject subjectPostDtoToSubject(SubjectPostDto subjectPostDto);
 }

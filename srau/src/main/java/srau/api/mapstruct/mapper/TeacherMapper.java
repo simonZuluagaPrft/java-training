@@ -13,6 +13,5 @@ public interface TeacherMapper {
     TeacherGetDto teacherToTeacherGetDto(Teacher teacher);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "courses", ignore = true)
     Teacher teacherPostDtoToTeacher(TeacherPostDto teacherPostDto);
 }

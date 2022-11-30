@@ -83,14 +83,11 @@ GET     read course
 PUT     update course
 DELETE  delete course
 
-course/enroll
+course/enrollment
 POST    enroll student in a course
 
-
---- Esta bien estructurado este uri? Hay mejor manera de plantear el endpoint?
-course/{id}/student/{studentId}
+course/drop/{studentId}/{courseId}
 DELETE  drop student from a course
----
 
 lecture/
 POST    create lecture

@@ -13,6 +13,5 @@ public interface SubjectMapper {
     SubjectGetDto subjectToSubjectGetDto(Subject subject);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "courses", ignore = true)
     Subject subjectPostDtoToSubject(SubjectPostDto subjectPostDto);
 }

@@ -159,7 +159,8 @@ public class CourseService {
 
         Course course = optCourse.get();
 
-        return course.getStudents()
+        return course
+                .getStudents()
                 .stream()
                 .map(studentMapper::studentToStudentGetDto)
                 .collect(Collectors.toSet());

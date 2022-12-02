@@ -38,8 +38,8 @@ public class StudentService {
     }
 
     public void createStudent(Student student) {
-        Optional<Student> studentOptional = studentRepository.findStudentByEmail(
-                student.getEmail());
+        Optional<Student> studentOptional = studentRepository
+                .findStudentByEmail(student.getEmail());
 
         if (studentOptional.isPresent()) {
             throw new IllegalStateException("Email taken");
@@ -81,6 +81,7 @@ public class StudentService {
             throw new IllegalStateException(
                     "Student with id " + studentId + " does not exists");
         }
+        
         studentRepository.deleteById(studentId);
     }
 

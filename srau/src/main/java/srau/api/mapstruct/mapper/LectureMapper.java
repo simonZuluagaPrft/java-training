@@ -12,4 +12,5 @@ public interface LectureMapper {
     @Mapping(target = "courseId", source = "lecture.course.id")
     @Mapping(target = "dayOfWeek", expression = "java(lecture.getDayOfWeek().getValue())")
     LectureGetDto lectureToLectureGetDto(Lecture lecture);
+
 }

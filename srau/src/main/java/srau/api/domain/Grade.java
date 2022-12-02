@@ -16,7 +16,7 @@ public class Grade {
     @Id
     @GeneratedValue
     private Long id;
-    private int score;
+    private Integer score;
     
     @ManyToOne
     private Student student;

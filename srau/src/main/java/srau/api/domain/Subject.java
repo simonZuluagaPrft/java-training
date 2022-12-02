@@ -1,11 +1,10 @@
 package srau.api.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 @Entity
@@ -17,6 +16,9 @@ public class Subject {
     private Long id;
     private String name;
     private String description;
+
+    @OneToMany
+    private Set<Course> courses;
 
     public Subject() {
     }

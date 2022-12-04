@@ -72,7 +72,7 @@ public class CourseController {
         return courseService.getCoursePassedStudents(courseId);
     }
 
-    @GetMapping(path = "{courseId}/passed")
+    @GetMapping(path = "{courseId}/failed")
     public Set<StudentGetDto> getCourseFailedStudents(
             @PathVariable("courseId") Long courseId) {
         return courseService.getCourseFailedStudents(courseId);

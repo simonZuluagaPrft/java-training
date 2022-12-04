@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import srau.api.domain.Grade;
 import srau.api.domain.Teacher;
+import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
 import srau.api.mapstruct.dto.TeacherPostDto;
 import srau.api.mapstruct.mapper.TeacherMapper;
@@ -22,7 +24,7 @@ import srau.api.services.TeacherService;
 @RestController
 @RequestMapping("api/v1/teacher")
 public class TeacherController {
-    
+
     private final TeacherMapper teacherMapper;
     private final TeacherService teacherService;
 
@@ -62,5 +64,19 @@ public class TeacherController {
     @DeleteMapping(path = "{teacherId}")
     public void deleteTeacher(@PathVariable("teacherId") Long teacherId) {
         teacherService.deleteTeacher(teacherId);
+    }
+
+    @PostMapping(path = "{teacherId}/grade")
+    public void gradeStudent(
+            @PathVariable("teacherId") Long teacherId,
+            @RequestBody GradePostDto gradePostDto) {
+        teacherService.gradeStudent(teacherId, gradePostDto);
+    }
+
+    @PutMapping(path = "{teacherId}/grade")
+    public void updateStudentGrade(
+            @PathVariable("teacherId") Long teacherId,
+            @RequestBody GradePostDto gradePostDto) {
+        teacherService.updateGrade(teacherId, gradePostDto);
     }
 }

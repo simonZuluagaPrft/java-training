@@ -15,8 +15,8 @@ import javax.persistence.Table;
 import lombok.*;
 
 @Data
-@EqualsAndHashCode(exclude = "students")
-@ToString(exclude = "students")
+@EqualsAndHashCode(exclude = {"students", "lectures", "grades"})
+@ToString(exclude = {"students", "lectures", "grades"})
 @Entity
 @Table
 public class Course {

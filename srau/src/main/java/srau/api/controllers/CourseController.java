@@ -29,7 +29,9 @@ public class CourseController {
     private final CourseService courseService;
 
     @Autowired
-    public CourseController(CourseMapper courseMapper, CourseService courseService) {
+    public CourseController(
+            CourseMapper courseMapper,
+            CourseService courseService) {
         this.courseMapper = courseMapper;
         this.courseService = courseService;
     }
@@ -47,10 +49,10 @@ public class CourseController {
     }
 
     @PutMapping(path = "{courseId}")
-    public void updateCourse(
+    public void changeCourseTeacher(
             @PathVariable("courseId") Long courseId,
             @RequestParam(required = true) String teacherEmail) {
-        courseService.updateCourse(courseId, teacherEmail);
+        courseService.changeCourseTeacher(courseId, teacherEmail);
     }
 
     @DeleteMapping(path = "{courseId}")
@@ -62,6 +64,18 @@ public class CourseController {
     public Set<StudentGetDto> getCourseStudents(
             @PathVariable("courseId") Long courseId) {
         return courseService.getCourseStudents(courseId);
+    }
+
+    @GetMapping(path = "{courseId}/passed")
+    public Set<StudentGetDto> getCoursePassedStudents(
+            @PathVariable("courseId") Long courseId) {
+        return courseService.getCoursePassedStudents(courseId);
+    }
+
+    @GetMapping(path = "{courseId}/passed")
+    public Set<StudentGetDto> getCourseFailedStudents(
+            @PathVariable("courseId") Long courseId) {
+        return courseService.getCourseFailedStudents(courseId);
     }
 
     @PostMapping(path = "{courseId}/student")

@@ -76,7 +76,7 @@ public class CourseService {
     }
 
     @Transactional
-    public void updateCourse(Long courseId, String teacherEmail) {
+    public void changeCourseTeacher(Long courseId, String teacherEmail) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
         if (!optCourse.isPresent()) {
@@ -166,4 +166,37 @@ public class CourseService {
                 .collect(Collectors.toSet());
     }
 
+    public Set<StudentGetDto> getCoursePassedStudents(Long courseId) {
+        Optional<Course> optCourse = courseRepository.findById(courseId);
+
+        if (!optCourse.isPresent()) {
+            throw new IllegalStateException("No course with id: " + courseId);
+        }
+
+        Course course = optCourse.get();
+
+        return course
+                .getGrades()
+                .stream()
+                .filter(g -> g.getScore() >= 3)
+                .map(g -> studentMapper.studentToStudentGetDto(g.getStudent()))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<StudentGetDto> getCourseFailedStudents(Long courseId) {
+        Optional<Course> optCourse = courseRepository.findById(courseId);
+
+        if (!optCourse.isPresent()) {
+            throw new IllegalStateException("No course with id: " + courseId);
+        }
+
+        Course course = optCourse.get();
+
+        return course
+                .getGrades()
+                .stream()
+                .filter(g -> g.getScore() < 3)
+                .map(g -> studentMapper.studentToStudentGetDto(g.getStudent()))
+                .collect(Collectors.toSet());
+    }
 }

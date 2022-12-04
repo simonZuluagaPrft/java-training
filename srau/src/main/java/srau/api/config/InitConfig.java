@@ -51,7 +51,7 @@ public class InitConfig {
                     a1physicsJupyter));
 
             Grade luneMathVenus = new Grade(5, lune, mathVenus);
-            Grade lunePhysicsJupyter = new Grade(4, lune, physicsJupyter);
+            Grade lunePhysicsJupyter = new Grade(2, lune, physicsJupyter);
             Grade soleiMathVenus = new Grade(4, solei, mathVenus);
             Grade soleiPhysicsJupyter = new Grade(5, solei, physicsJupyter);
 

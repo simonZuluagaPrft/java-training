@@ -1,17 +1,22 @@
 package srau.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import srau.api.domain.Grade;
+import srau.api.domain.Lecture;
 import srau.api.domain.Student;
 import srau.api.mapstruct.dto.CourseGetDto;
+import srau.api.mapstruct.dto.Schedule;
 import srau.api.mapstruct.dto.SubjectGetDto;
 import srau.api.mapstruct.mapper.CourseMapper;
 import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.repositories.GradeRepository;
 import srau.api.repositories.StudentRepository;
 
+import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,7 +98,7 @@ public class StudentService {
             throw new IllegalStateException(
                     "Student with id " + studentId + " does not exists");
         }
-        
+
         studentRepository.deleteById(studentId);
     }
 
@@ -131,5 +136,39 @@ public class StudentService {
                 .map(c -> subjectMapper
                         .subjectToSubjectGetDto(c.getSubject()))
                 .collect(Collectors.toList());
+    }
+
+    public List<Schedule> getStudentSchedule(Long studentId) {
+        // get courses
+        // get courses lectures
+        // parse
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "student with id " + studentId + " does not exists"));
+
+        List<List<Lecture>> lectureList = student
+                .getCourses()
+                .stream()
+                .map(c -> c.getLectures().stream().toList())
+                .toList();
+
+        // go through the lectures and add them to the day
+        List<Schedule> scheduleList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            scheduleList.add(new Schedule(DayOfWeek.of(i + 1).name()));
+        }
+
+        lectureList.forEach(
+                list -> list.forEach(
+                        l -> scheduleList
+                                .get(l.getDayOfWeek().getValue() - 1)
+                                .getClasses()
+                                .add(Pair.of(l.getStartHour(), l.getFinishHour()))
+                )
+        );
+
+//        scheduleList.forEach(s -> s.);
+        return scheduleList;
     }
 }

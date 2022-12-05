@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import srau.api.domain.Student;
-import srau.api.mapstruct.dto.CourseGetDto;
-import srau.api.mapstruct.dto.StudentGetDto;
-import srau.api.mapstruct.dto.StudentPostDto;
-import srau.api.mapstruct.dto.SubjectGetDto;
+import srau.api.mapstruct.dto.*;
 import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.services.StudentService;
 
@@ -82,5 +79,11 @@ public class StudentController {
     public List<SubjectGetDto> getStudentSubjects(
             @PathVariable("studentId") Long studentId) {
         return studentService.getStudentSubjects(studentId);
+    }
+
+    @GetMapping(path = "{studentId}/schedule")
+    public List<Schedule> getStudentSchedule(
+            @PathVariable("studentId") Long studentId) {
+        return studentService.getStudentSchedule(studentId);
     }
 }

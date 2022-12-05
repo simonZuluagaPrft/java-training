@@ -8,6 +8,7 @@ import srau.api.domain.Grade;
 import srau.api.domain.Lecture;
 import srau.api.domain.Student;
 import srau.api.mapstruct.dto.CourseGetDto;
+import srau.api.mapstruct.dto.Report;
 import srau.api.mapstruct.dto.Schedule;
 import srau.api.mapstruct.dto.SubjectGetDto;
 import srau.api.mapstruct.mapper.CourseMapper;
@@ -139,10 +140,6 @@ public class StudentService {
     }
 
     public List<Schedule> getStudentSchedule(Long studentId) {
-        // get courses
-        // get courses lectures
-        // parse
-
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + studentId + " does not exists"));
@@ -168,7 +165,21 @@ public class StudentService {
                 )
         );
 
-//        scheduleList.forEach(s -> s.);
         return scheduleList;
+    }
+
+    public List<Report> getStudentReportCard(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "student with id " + studentId + " does not exists"));
+
+        return student
+                .getGrades()
+                .stream()
+                .map(g -> new Report(
+                        g.getCourse().getSubject().getName(),
+                        g.getCourse().getTeacher().getName(),
+                        g.getScore()))
+                .collect(Collectors.toList());
     }
 }

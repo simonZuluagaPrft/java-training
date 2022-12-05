@@ -86,4 +86,10 @@ public class StudentController {
             @PathVariable("studentId") Long studentId) {
         return studentService.getStudentSchedule(studentId);
     }
+
+    @GetMapping(path = "{studentId}/reportCard")
+    public List<Report> getStudentReportCard(
+            @PathVariable("studentId") Long studentId) {
+        return studentService.getStudentReportCard(studentId);
+    }
 }

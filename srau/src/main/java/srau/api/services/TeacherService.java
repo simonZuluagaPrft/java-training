@@ -135,11 +135,13 @@ public class TeacherService {
                 .orElseThrow(() -> new IllegalStateException(
                         "teacher with id " + teacherId + " does not exists"));
 
-        Course course = courseRepository.findById(gradePostDto.getCourseId())
+        Course course = courseRepository
+                .findById(gradePostDto.getCourseId())
                 .orElseThrow(() -> new IllegalStateException(
                         "course with id " + gradePostDto.getCourseId() + " does not exists"));
 
-        Student student = studentRepository.findById(gradePostDto.getStudentId())
+        Student student = studentRepository
+                .findById(gradePostDto.getStudentId())
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + gradePostDto.getStudentId() + " does not exists"));
 
@@ -153,7 +155,8 @@ public class TeacherService {
                     "student with id: " + student.getId() + " is not enrolled in that course");
         }
 
-        Optional<Grade> optGrade = gradeRepository.getByCourseIdStudentId(course.getId(), student.getId());
+        Optional<Grade> optGrade = gradeRepository
+                .getByCourseIdStudentId(course.getId(), student.getId());
         if (optGrade.isEmpty()) {
             throw new IllegalStateException(
                     "this student has not been graded in the course");

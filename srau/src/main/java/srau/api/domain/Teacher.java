@@ -1,10 +1,8 @@
 package srau.api.domain;
 
-import javax.persistence.*;
-
-import ch.qos.logback.core.CoreConstants;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Data

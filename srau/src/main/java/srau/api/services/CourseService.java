@@ -1,15 +1,7 @@
 package srau.api.services;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import srau.api.domain.Course;
 import srau.api.domain.Student;
 import srau.api.domain.Subject;
@@ -23,6 +15,11 @@ import srau.api.repositories.CourseRepository;
 import srau.api.repositories.StudentRepository;
 import srau.api.repositories.SubjectRepository;
 import srau.api.repositories.TeacherRepository;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -55,7 +52,7 @@ public class CourseService {
     public Course getCourseById(Long courseId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -66,7 +63,7 @@ public class CourseService {
         Optional<Subject> optSubject = subjectRepository
                 .findById(coursePostDto.getSubjectId());
 
-        if (!optSubject.isPresent()) {
+        if (optSubject.isEmpty()) {
             throw new IllegalStateException(
                     "No subject with id: " + coursePostDto.getSubjectId());
         }
@@ -76,7 +73,7 @@ public class CourseService {
         Optional<Teacher> optTeacher = teacherRepository
                 .findById(coursePostDto.getTeacherId());
 
-        if (!optTeacher.isPresent()) {
+        if (optTeacher.isEmpty()) {
             throw new IllegalStateException(
                     "No teacher with id: " + coursePostDto.getTeacherId());
         }
@@ -91,7 +88,7 @@ public class CourseService {
     public void changeCourseTeacher(Long courseId, String teacherEmail) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -100,7 +97,7 @@ public class CourseService {
         Optional<Teacher> optTeacher = teacherRepository
                 .findTeacherByEmail(teacherEmail);
 
-        if (!optTeacher.isPresent()) {
+        if (optTeacher.isEmpty()) {
             throw new IllegalStateException(
                     "No teacher with email: " + teacherEmail);
         }
@@ -123,7 +120,7 @@ public class CourseService {
     public void enrollStudent(Long courseId, Long studentId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -131,7 +128,7 @@ public class CourseService {
 
         Optional<Student> optStudent = studentRepository.findById(studentId);
 
-        if (!optStudent.isPresent()) {
+        if (optStudent.isEmpty()) {
             throw new IllegalStateException("No student with id: " + studentId);
         }
 
@@ -144,7 +141,7 @@ public class CourseService {
     public void dropStudent(Long courseId, Long studentId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -152,7 +149,7 @@ public class CourseService {
 
         Optional<Student> optStudent = studentRepository.findById(studentId);
 
-        if (!optStudent.isPresent()) {
+        if (optStudent.isEmpty()) {
             throw new IllegalStateException("No student with id: " + studentId);
         }
 
@@ -162,10 +159,10 @@ public class CourseService {
         courseRepository.save(course);
     }
 
-    public Set<StudentGetDto> getCourseStudents(Long courseId) {
+    public List<StudentGetDto> getCourseStudents(Long courseId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -175,13 +172,13 @@ public class CourseService {
                 .getStudents()
                 .stream()
                 .map(studentMapper::studentToStudentGetDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
-    public Set<StudentGetDto> getCoursePassedStudents(Long courseId) {
+    public List<StudentGetDto> getCoursePassedStudents(Long courseId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -192,13 +189,13 @@ public class CourseService {
                 .stream()
                 .filter(g -> g.getScore() >= 3)
                 .map(g -> studentMapper.studentToStudentGetDto(g.getStudent()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
-    public Set<StudentGetDto> getCourseFailedStudents(Long courseId) {
+    public List<StudentGetDto> getCourseFailedStudents(Long courseId) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
-        if (!optCourse.isPresent()) {
+        if (optCourse.isEmpty()) {
             throw new IllegalStateException("No course with id: " + courseId);
         }
 
@@ -209,7 +206,7 @@ public class CourseService {
                 .stream()
                 .filter(g -> g.getScore() < 3)
                 .map(g -> studentMapper.studentToStudentGetDto(g.getStudent()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
 }

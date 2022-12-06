@@ -1,16 +1,9 @@
 package srau.api.domain;
 
-import java.time.DayOfWeek;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import lombok.Data;
+
+import javax.persistence.*;
+import java.time.DayOfWeek;
 
 @Data
 @Entity
@@ -20,7 +13,6 @@ public class Lecture {
     @Id
     @GeneratedValue
     private Long id;
-    @Enumerated(value = EnumType.STRING)
     private DayOfWeek dayOfWeek;
     private Integer startHour;
     private Integer finishHour;

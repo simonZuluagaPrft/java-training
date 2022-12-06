@@ -33,7 +33,7 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<Subject> getSubjects() {
+    public List<SubjectGetDto> getSubjects() {
         return subjectService.getSubjects();
     }
 

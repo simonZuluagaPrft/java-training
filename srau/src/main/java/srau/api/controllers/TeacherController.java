@@ -1,19 +1,7 @@
 package srau.api.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import srau.api.domain.Grade;
+import org.springframework.web.bind.annotation.*;
 import srau.api.domain.Teacher;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
@@ -21,12 +9,14 @@ import srau.api.mapstruct.dto.TeacherPostDto;
 import srau.api.mapstruct.mapper.TeacherMapper;
 import srau.api.services.TeacherService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/teacher")
 public class TeacherController {
 
-    private final TeacherMapper teacherMapper;
     private final TeacherService teacherService;
+    private final TeacherMapper teacherMapper;
 
     @Autowired
     public TeacherController(TeacherMapper teacherMapper, TeacherService teacherService) {
@@ -36,7 +26,7 @@ public class TeacherController {
 
 
     @GetMapping
-    public List<Teacher> getTeachers() {
+    public List<TeacherGetDto> getTeachers() {
         return teacherService.getTeachers();
     }
 

@@ -7,6 +7,8 @@ import srau.api.domain.Grade;
 import srau.api.domain.Student;
 import srau.api.domain.Teacher;
 import srau.api.mapstruct.dto.GradePostDto;
+import srau.api.mapstruct.dto.TeacherGetDto;
+import srau.api.mapstruct.mapper.TeacherMapper;
 import srau.api.repositories.CourseRepository;
 import srau.api.repositories.GradeRepository;
 import srau.api.repositories.StudentRepository;
@@ -16,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -24,17 +27,23 @@ public class TeacherService {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final GradeRepository gradeRepository;
+    private final TeacherMapper teacherMapper;
 
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, StudentRepository studentRepository, GradeRepository gradeRepository) {
+    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, StudentRepository studentRepository, GradeRepository gradeRepository, TeacherMapper teacherMapper) {
         this.teacherRepository = teacherRepository;
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
         this.gradeRepository = gradeRepository;
+        this.teacherMapper = teacherMapper;
     }
 
-    public List<Teacher> getTeachers() {
-        return teacherRepository.findAll();
+    public List<TeacherGetDto> getTeachers() {
+        return teacherRepository
+                .findAll()
+                .stream()
+                .map(teacherMapper::teacherToTeacherGetDto)
+                .collect(Collectors.toList());
     }
 
     public Teacher getTeacherByEmail(String teacherEmail) {

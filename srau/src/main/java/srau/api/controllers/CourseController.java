@@ -1,5 +1,6 @@
 package srau.api.controllers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class CourseController {
             CourseService courseService) {
         this.courseMapper = courseMapper;
         this.courseService = courseService;
+    }
+
+    @GetMapping
+    public List<CourseGetDto> getCourses() {
+        return courseService.getCourses();
     }
 
     @GetMapping(path = "{courseId}")

@@ -3,6 +3,7 @@ package srau.api.services;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,26 +11,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import srau.api.domain.Subject;
+import srau.api.mapstruct.dto.SubjectGetDto;
+import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.repositories.SubjectRepository;
 
 @Service
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final SubjectMapper subjectMapper;
 
     @Autowired
-    public SubjectService(SubjectRepository subjectRepository) {
+    public SubjectService(SubjectRepository subjectRepository, SubjectMapper subjectMapper) {
         this.subjectRepository = subjectRepository;
+        this.subjectMapper = subjectMapper;
     }
 
-    public List<Subject> getSubjects() {
-        return subjectRepository.findAll();
+    public List<SubjectGetDto> getSubjects() {
+        return subjectRepository
+                .findAll()
+                .stream()
+                .map(subjectMapper::subjectToSubjectGetDto)
+                .collect(Collectors.toList());
     }
 
     public Subject getSubjectByName(String subjectName) {
         Optional<Subject> optSubject = subjectRepository.findSubjectByName(subjectName);
 
-        if (!optSubject.isPresent()) {
+        if (optSubject.isEmpty()) {
             throw new IllegalStateException("No subject with name: " + subjectName);
         }
 

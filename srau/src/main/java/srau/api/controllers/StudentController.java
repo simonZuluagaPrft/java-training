@@ -22,8 +22,8 @@ import srau.api.services.StudentService;
 @RequestMapping("api/v1/student")
 public class StudentController {
 
-    private final StudentMapper studentMapper;
     private final StudentService studentService;
+    private final StudentMapper studentMapper;
 
     @Autowired
     public StudentController(StudentMapper studentMapper, StudentService studentService) {
@@ -32,7 +32,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getStudents() {
+    public List<StudentGetDto> getStudents() {
         return studentService.getStudents();
     }
 

@@ -7,11 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import srau.api.domain.Grade;
 import srau.api.domain.Lecture;
 import srau.api.domain.Student;
-import srau.api.mapstruct.dto.CourseGetDto;
-import srau.api.mapstruct.dto.Report;
-import srau.api.mapstruct.dto.Schedule;
-import srau.api.mapstruct.dto.SubjectGetDto;
+import srau.api.mapstruct.dto.*;
 import srau.api.mapstruct.mapper.CourseMapper;
+import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.repositories.GradeRepository;
 import srau.api.repositories.StudentRepository;
@@ -28,19 +26,25 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final GradeRepository gradeRepository;
+    private final StudentMapper studentMapper;
     private final CourseMapper courseMapper;
     private final SubjectMapper subjectMapper;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, GradeRepository gradeRepository, CourseMapper courseMapper, SubjectMapper subjectMapper) {
+    public StudentService(StudentRepository studentRepository, GradeRepository gradeRepository, StudentMapper studentMapper, CourseMapper courseMapper, SubjectMapper subjectMapper) {
         this.studentRepository = studentRepository;
         this.gradeRepository = gradeRepository;
+        this.studentMapper = studentMapper;
         this.courseMapper = courseMapper;
         this.subjectMapper = subjectMapper;
     }
 
-    public List<Student> getStudents() {
-        return studentRepository.findAll();
+    public List<StudentGetDto> getStudents() {
+        return studentRepository
+                .findAll()
+                .stream()
+                .map(studentMapper::studentToStudentGetDto)
+                .collect(Collectors.toList());
     }
 
     public Student getStudentByEmail(String studentEmail) {
@@ -150,7 +154,6 @@ public class StudentService {
                 .map(c -> c.getLectures().stream().toList())
                 .toList();
 
-        // go through the lectures and add them to the day
         List<Schedule> scheduleList = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             scheduleList.add(new Schedule(DayOfWeek.of(i + 1).name()));

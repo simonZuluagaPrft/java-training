@@ -3,6 +3,8 @@ package srau.api.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,32 +34,39 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<SubjectGetDto> getSubjects() {
-        return subjectService.getSubjects();
+    public ResponseEntity<List<SubjectGetDto>> getSubjects() {
+        return new ResponseEntity<>(subjectService.getSubjects(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{subjectName}")
-    public SubjectGetDto getSubjectByName(@PathVariable("subjectName") String subjectName) {
+    public ResponseEntity<SubjectGetDto> getSubjectByName(
+            @PathVariable("subjectName") String subjectName) {
         Subject subject = subjectService.getSubjectByName(subjectName);
-        return subjectMapper.subjectToSubjectGetDto(subject);
+        return new ResponseEntity<>(subjectMapper.subjectToSubjectGetDto(subject), HttpStatus.OK);
     }
 
     @PostMapping
-    public void createSubject(@RequestBody SubjectPostDto subjectPostDto) {
+    public ResponseEntity<HttpStatus> createSubject(@RequestBody SubjectPostDto subjectPostDto) {
         Subject subject = subjectMapper.subjectPostDtoToSubject(subjectPostDto);
         subjectService.createSubject(subject);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{subjectId}")
-    public void updateSubject(
+    public ResponseEntity<SubjectGetDto> updateSubject(
             @PathVariable("subjectId") Long subjectId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email) {
-        subjectService.updateSubject(subjectId, name, email);
+        SubjectGetDto subjectGetDto = subjectService.updateSubject(subjectId, name, email);
+
+        return new ResponseEntity<>(subjectGetDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{subjectId}")
-    public void deleteSubject(@PathVariable("subjectId") Long subjectId) {
+    public ResponseEntity<HttpStatus> deleteSubject(@PathVariable("subjectId") Long subjectId) {
         subjectService.deleteSubject(subjectId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

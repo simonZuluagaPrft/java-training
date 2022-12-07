@@ -54,7 +54,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public void updateSubject(Long subjectId, String name, String description) {
+    public SubjectGetDto updateSubject(Long subjectId, String name, String description) {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new IllegalStateException(
                         "subject with id " + subjectId + " does not exists"));
@@ -79,6 +79,7 @@ public class SubjectService {
             subject.setDescription(description);
         }
 
+        return subjectMapper.subjectToSubjectGetDto(subject);
     }
 
     public void deleteSubject(Long subjectId) {

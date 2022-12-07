@@ -86,7 +86,7 @@ public class CourseService {
     }
 
     @Transactional
-    public void changeCourseTeacher(Long courseId, String teacherEmail) {
+    public CourseGetDto changeCourseTeacher(Long courseId, String teacherEmail) {
         Optional<Course> optCourse = courseRepository.findById(courseId);
 
         if (optCourse.isEmpty()) {
@@ -104,6 +104,7 @@ public class CourseService {
         Teacher teacher = optTeacher.get();
 
         course.setTeacher(teacher);
+        return courseMapper.courseToCourseGetDto(course);
     }
 
     public void deleteCourse(Long courseId) {

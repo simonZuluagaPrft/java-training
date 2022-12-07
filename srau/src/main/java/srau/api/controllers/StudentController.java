@@ -1,22 +1,15 @@
 package srau.api.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import srau.api.domain.Student;
 import srau.api.mapstruct.dto.*;
 import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.services.StudentService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/student")
@@ -31,59 +24,69 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentGetDto> getStudents() {
-        return studentService.getStudents();
+    public ResponseEntity<List<StudentGetDto>> getStudents() {
+        return new ResponseEntity<>(studentService.getStudents(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentEmail}")
-    public StudentGetDto getStudentByEmail(@PathVariable("studentEmail") String studentEmail) {
-        Student student = studentService.getStudentByEmail(studentEmail);
-        return studentMapper.studentToStudentGetDto(student);
+    public ResponseEntity<StudentGetDto> getStudentByEmail(
+            @PathVariable("studentEmail") String studentEmail) {
+        StudentGetDto studentGetDto = studentMapper
+                .studentToStudentGetDto(studentService.getStudentByEmail(studentEmail));
+        return new ResponseEntity<>(studentGetDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public void createStudent(@RequestBody StudentPostDto studentPostDto) {
+    public ResponseEntity<HttpStatus> createStudent(@RequestBody StudentPostDto studentPostDto) {
         Student student = studentMapper.studentPostDtoToStudent(studentPostDto);
         studentService.createStudent(student);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{studentId}")
-    public void updateStudent(
+    public ResponseEntity<StudentGetDto> updateStudent(
             @PathVariable("studentId") Long studentId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email) {
-        studentService.updateStudent(studentId, name, email);
+        StudentGetDto studentGetDto = studentService.updateStudent(studentId, name, email);
+        return new ResponseEntity<>(studentGetDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Long studentId) {
+    public ResponseEntity<HttpStatus> deleteStudent(@PathVariable("studentId") Long studentId) {
         studentService.deleteStudent(studentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentId}/course")
-    public List<CourseGetDto> getStudentCourses(@PathVariable("studentId") Long studentId) {
-        return studentService.getStudentCourses(studentId);
+    public ResponseEntity<List<CourseGetDto>> getStudentCourses(
+            @PathVariable("studentId") Long studentId) {
+        return new ResponseEntity<>(studentService.getStudentCourses(studentId), HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentId}/course/{courseId}")
-    public Integer getStudentGrade(
+    public ResponseEntity<Integer> getStudentGrade(
             @PathVariable("studentId") Long studentId,
             @PathVariable("courseId") Long courseId) {
-        return studentService.getStudentGrade(studentId, courseId);
+        Integer studentGrade = studentService.getStudentGrade(studentId, courseId);
+        return new ResponseEntity<>(studentGrade, HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentId}/subject")
-    public List<SubjectGetDto> getStudentSubjects(@PathVariable("studentId") Long studentId) {
-        return studentService.getStudentSubjects(studentId);
+    public ResponseEntity<List<SubjectGetDto>> getStudentSubjects(
+            @PathVariable("studentId") Long studentId) {
+        return new ResponseEntity<>(studentService.getStudentSubjects(studentId), HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentId}/schedule")
-    public List<Schedule> getStudentSchedule(@PathVariable("studentId") Long studentId) {
-        return studentService.getStudentSchedule(studentId);
+    public ResponseEntity<List<Schedule>> getStudentSchedule(
+            @PathVariable("studentId") Long studentId) {
+        return new ResponseEntity<>(studentService.getStudentSchedule(studentId), HttpStatus.OK);
     }
 
     @GetMapping(path = "{studentId}/reportCard")
-    public List<Report> getStudentReportCard(@PathVariable("studentId") Long studentId) {
-        return studentService.getStudentReportCard(studentId);
+    public ResponseEntity<List<Report>> getStudentReportCard(
+            @PathVariable("studentId") Long studentId) {
+        return new ResponseEntity<>(studentService.getStudentReportCard(studentId), HttpStatus.OK);
     }
 }

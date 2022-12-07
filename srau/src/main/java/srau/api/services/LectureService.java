@@ -55,7 +55,7 @@ public class LectureService {
     }
 
     @Transactional
-    public void updateLecture(
+    public LectureGetDto updateLecture(
             Long lectureId,
             Integer dayOfWeek,
             Integer startHour,
@@ -76,6 +76,8 @@ public class LectureService {
         if (finishHour != null) {
             lecture.setFinishHour(finishHour);
         }
+
+        return lectureMapper.lectureToLectureGetDto(lecture);
     }
 
     public void deleteLecture(Long lectureId) {

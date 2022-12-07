@@ -6,8 +6,10 @@ import srau.api.domain.Course;
 import srau.api.domain.Grade;
 import srau.api.domain.Student;
 import srau.api.domain.Teacher;
+import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
+import srau.api.mapstruct.mapper.GradeMapper;
 import srau.api.mapstruct.mapper.TeacherMapper;
 import srau.api.repositories.CourseRepository;
 import srau.api.repositories.GradeRepository;
@@ -27,6 +29,7 @@ public class TeacherService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final TeacherMapper teacherMapper;
+    private final GradeMapper gradeMapper;
 
     @Autowired
     public TeacherService(
@@ -34,12 +37,14 @@ public class TeacherService {
             GradeRepository gradeRepository,
             StudentRepository studentRepository,
             TeacherRepository teacherRepository,
-            TeacherMapper teacherMapper) {
+            TeacherMapper teacherMapper,
+            GradeMapper gradeMapper) {
         this.courseRepository = courseRepository;
         this.gradeRepository = gradeRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.teacherMapper = teacherMapper;
+        this.gradeMapper = gradeMapper;
     }
 
     public List<TeacherGetDto> getTeachers() {
@@ -71,7 +76,7 @@ public class TeacherService {
     }
 
     @Transactional
-    public void updateTeacher(Long teacherId, String name, String email) {
+    public TeacherGetDto updateTeacher(Long teacherId, String name, String email) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalStateException(
                         "teacher with id " + teacherId + " does not exists"));
@@ -95,6 +100,8 @@ public class TeacherService {
 
             teacher.setEmail(email);
         }
+
+        return teacherMapper.teacherToTeacherGetDto(teacher);
     }
 
     public void deleteTeacher(Long teacherId) {
@@ -140,7 +147,7 @@ public class TeacherService {
     }
 
     @Transactional
-    public void updateStudentGrade(Long teacherId, GradePostDto gradePostDto) {
+    public GradeGetDto updateStudentGrade(Long teacherId, GradePostDto gradePostDto) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalStateException(
                         "teacher with id " + teacherId + " does not exists"));
@@ -174,5 +181,7 @@ public class TeacherService {
 
         Grade grade = optGrade.get();
         grade.setScore(gradePostDto.getScore());
+
+        return gradeMapper.gradeToGradeGetDto(grade);
     }
 }

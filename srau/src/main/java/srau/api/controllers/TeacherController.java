@@ -1,7 +1,10 @@
 package srau.api.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import srau.api.domain.Teacher;
+import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
 import srau.api.mapstruct.dto.TeacherPostDto;
@@ -22,46 +25,55 @@ public class TeacherController {
     }
 
     @GetMapping
-    public List<TeacherGetDto> getTeachers() {
-        return teacherService.getTeachers();
+    public ResponseEntity<List<TeacherGetDto>> getTeachers() {
+        return new ResponseEntity<>(teacherService.getTeachers(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{teacherEmail}")
-    public TeacherGetDto getTeacherByEmail(@PathVariable("teacherEmail") String teacherEmail) {
+    public ResponseEntity<TeacherGetDto> getTeacherByEmail(
+            @PathVariable("teacherEmail") String teacherEmail) {
         Teacher teacher = teacherService.getTeacherByEmail(teacherEmail);
-        return teacherMapper.teacherToTeacherGetDto(teacher);
+        return new ResponseEntity<>(teacherMapper.teacherToTeacherGetDto(teacher), HttpStatus.OK);
     }
 
     @PostMapping
-    public void createTeacher(@RequestBody TeacherPostDto teacherPostDto) {
+    public ResponseEntity<HttpStatus> createTeacher(@RequestBody TeacherPostDto teacherPostDto) {
         Teacher teacher = teacherMapper.teacherPostDtoToTeacher(teacherPostDto);
         teacherService.createTeacher(teacher);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{teacherId}")
-    public void updateTeacher(
+    public ResponseEntity<TeacherGetDto> updateTeacher(
             @PathVariable("teacherId") Long teacherId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email) {
-        teacherService.updateTeacher(teacherId, name, email);
+        return new ResponseEntity<>(teacherService.updateTeacher(teacherId, name, email), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{teacherId}")
-    public void deleteTeacher(@PathVariable("teacherId") Long teacherId) {
+    public ResponseEntity deleteTeacher(@PathVariable("teacherId") Long teacherId) {
         teacherService.deleteTeacher(teacherId);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping(path = "{teacherId}/grade")
-    public void gradeStudent(
+    public ResponseEntity<HttpStatus> gradeStudent(
             @PathVariable("teacherId") Long teacherId,
             @RequestBody GradePostDto gradePostDto) {
         teacherService.gradeStudent(teacherId, gradePostDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{teacherId}/grade")
-    public void updateStudentGrade(
+    public ResponseEntity<GradeGetDto> updateStudentGrade(
             @PathVariable("teacherId") Long teacherId,
             @RequestBody GradePostDto gradePostDto) {
-        teacherService.updateStudentGrade(teacherId, gradePostDto);
+        GradeGetDto gradeGetDto = teacherService.updateStudentGrade(teacherId, gradePostDto);
+
+        return new ResponseEntity<>(gradeGetDto, HttpStatus.OK);
     }
 }

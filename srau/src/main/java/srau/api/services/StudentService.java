@@ -72,7 +72,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(Long studentId, String name, String email) {
+    public StudentGetDto updateStudent(Long studentId, String name, String email) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + studentId + " does not exists"));
@@ -96,6 +96,8 @@ public class StudentService {
 
             student.setEmail(email);
         }
+
+        return studentMapper.studentToStudentGetDto(student);
     }
 
     public void deleteStudent(Long studentId) {

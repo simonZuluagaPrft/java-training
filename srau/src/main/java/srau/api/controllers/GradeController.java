@@ -1,6 +1,8 @@
 package srau.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
@@ -19,17 +21,19 @@ public class GradeController {
     }
 
     @GetMapping
-    public List<GradeGetDto> getGrades() {
-        return gradeService.getGrades();
+    public ResponseEntity<List<GradeGetDto>> getGrades() {
+        return new ResponseEntity<>(gradeService.getGrades(), HttpStatus.OK);
     }
 
     @PostMapping
-    public void createGrade(@RequestBody GradePostDto gradePostDto) {
+    public ResponseEntity<HttpStatus> createGrade(@RequestBody GradePostDto gradePostDto) {
         gradeService.createGrade(gradePostDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "{gradeId}")
-    public void deleteGrade(@PathVariable("gradeId") Long gradeId) {
+    public ResponseEntity<HttpStatus> deleteGrade(@PathVariable("gradeId") Long gradeId) {
         gradeService.deleteGrade(gradeId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

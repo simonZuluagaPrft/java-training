@@ -9,7 +9,6 @@ import srau.api.mapstruct.dto.StudentPostDto;
 
 @Mapper(componentModel = "spring")
 public interface StudentMapper {
-    
     StudentGetDto studentToStudentGetDto(Student student);
 
     @Mapping(target = "id", ignore = true)

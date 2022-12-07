@@ -8,10 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TeacherGetDto {
-
     @Id
     private Long id;
     private String name;
     private String email;
-
 }

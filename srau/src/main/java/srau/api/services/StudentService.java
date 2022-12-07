@@ -23,19 +23,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-
-    private final StudentRepository studentRepository;
     private final GradeRepository gradeRepository;
-    private final StudentMapper studentMapper;
+    private final StudentRepository studentRepository;
     private final CourseMapper courseMapper;
+    private final StudentMapper studentMapper;
     private final SubjectMapper subjectMapper;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, GradeRepository gradeRepository, StudentMapper studentMapper, CourseMapper courseMapper, SubjectMapper subjectMapper) {
-        this.studentRepository = studentRepository;
+    public StudentService(
+            GradeRepository gradeRepository,
+            StudentRepository studentRepository,
+            CourseMapper courseMapper,
+            StudentMapper studentMapper,
+            SubjectMapper subjectMapper) {
         this.gradeRepository = gradeRepository;
-        this.studentMapper = studentMapper;
+        this.studentRepository = studentRepository;
         this.courseMapper = courseMapper;
+        this.studentMapper = studentMapper;
         this.subjectMapper = subjectMapper;
     }
 
@@ -48,12 +52,10 @@ public class StudentService {
     }
 
     public Student getStudentByEmail(String studentEmail) {
-        Optional<Student> optStudent = studentRepository
-                .findStudentByEmail(studentEmail);
+        Optional<Student> optStudent = studentRepository.findStudentByEmail(studentEmail);
 
         if (optStudent.isEmpty()) {
-            throw new IllegalStateException(
-                    "No student with email: " + studentEmail);
+            throw new IllegalStateException("No student with email: " + studentEmail);
         }
 
         return optStudent.get();
@@ -100,8 +102,7 @@ public class StudentService {
         boolean exists = studentRepository.existsById(studentId);
 
         if (!exists) {
-            throw new IllegalStateException(
-                    "Student with id " + studentId + " does not exists");
+            throw new IllegalStateException("Student with id " + studentId + " does not exists");
         }
 
         studentRepository.deleteById(studentId);
@@ -120,8 +121,7 @@ public class StudentService {
     }
 
     public Integer getStudentGrade(Long studentId, Long courseId) {
-        Optional<Grade> optGrade = gradeRepository
-                .getByCourseIdStudentId(courseId, studentId);
+        Optional<Grade> optGrade = gradeRepository.getByCourseIdStudentId(courseId, studentId);
         if (optGrade.isEmpty()) {
             throw new IllegalStateException(
                     "this student has not been graded in the course");
@@ -138,8 +138,7 @@ public class StudentService {
 
         return student.getCourses()
                 .stream()
-                .map(c -> subjectMapper
-                        .subjectToSubjectGetDto(c.getSubject()))
+                .map(c -> subjectMapper.subjectToSubjectGetDto(c.getSubject()))
                 .collect(Collectors.toList());
     }
 

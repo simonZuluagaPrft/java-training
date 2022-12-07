@@ -17,7 +17,6 @@ import srau.api.repositories.SubjectRepository;
 
 @Service
 public class SubjectService {
-
     private final SubjectRepository subjectRepository;
     private final SubjectMapper subjectMapper;
 
@@ -46,8 +45,7 @@ public class SubjectService {
     }
 
     public void createSubject(Subject subject) {
-        Optional<Subject> subjectOptional = subjectRepository.findSubjectByName(
-                subject.getName());
+        Optional<Subject> subjectOptional = subjectRepository.findSubjectByName(subject.getName());
 
         if (subjectOptional.isPresent()) {
             throw new IllegalStateException("Name taken");
@@ -91,5 +89,4 @@ public class SubjectService {
         }
         subjectRepository.deleteById(subjectId);
     }
-
 }

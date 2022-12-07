@@ -9,14 +9,12 @@ import java.time.DayOfWeek;
 @Entity
 @Table
 public class Lecture {
-    
     @Id
     @GeneratedValue
     private Long id;
     private DayOfWeek dayOfWeek;
     private Integer startHour;
     private Integer finishHour;
-
     @ManyToOne
     private Course course;
 
@@ -29,5 +27,4 @@ public class Lecture {
         this.finishHour = finishHour;
         this.course = course;
     }
-
 }

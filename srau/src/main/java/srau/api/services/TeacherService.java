@@ -22,19 +22,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
-
-    private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository;
     private final GradeRepository gradeRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
     private final TeacherMapper teacherMapper;
 
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, StudentRepository studentRepository, GradeRepository gradeRepository, TeacherMapper teacherMapper) {
-        this.teacherRepository = teacherRepository;
+    public TeacherService(
+            CourseRepository courseRepository,
+            GradeRepository gradeRepository,
+            StudentRepository studentRepository,
+            TeacherRepository teacherRepository,
+            TeacherMapper teacherMapper) {
         this.courseRepository = courseRepository;
-        this.studentRepository = studentRepository;
         this.gradeRepository = gradeRepository;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
         this.teacherMapper = teacherMapper;
     }
 
@@ -47,12 +51,10 @@ public class TeacherService {
     }
 
     public Teacher getTeacherByEmail(String teacherEmail) {
-        Optional<Teacher> optTeacher = teacherRepository
-                .findTeacherByEmail(teacherEmail);
+        Optional<Teacher> optTeacher = teacherRepository.findTeacherByEmail(teacherEmail);
 
         if (optTeacher.isEmpty()) {
-            throw new IllegalStateException(
-                    "No teacher with email: " + teacherEmail);
+            throw new IllegalStateException("No teacher with email: " + teacherEmail);
         }
 
         return optTeacher.get();
@@ -99,8 +101,7 @@ public class TeacherService {
         boolean exists = teacherRepository.existsById(teacherId);
 
         if (!exists) {
-            throw new IllegalStateException(
-                    "Teacher with id " + teacherId + " does not exists");
+            throw new IllegalStateException("Teacher with id " + teacherId + " does not exists");
         }
         teacherRepository.deleteById(teacherId);
     }
@@ -139,7 +140,7 @@ public class TeacherService {
     }
 
     @Transactional
-    public void updateGrade(Long teacherId, GradePostDto gradePostDto) {
+    public void updateStudentGrade(Long teacherId, GradePostDto gradePostDto) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalStateException(
                         "teacher with id " + teacherId + " does not exists"));

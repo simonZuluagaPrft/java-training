@@ -20,7 +20,6 @@ import srau.api.services.LectureService;
 @RestController
 @RequestMapping("api/v1/lecture")
 public class LectureController {
-
     private final LectureService lectureService;
 
     @Autowired
@@ -51,5 +50,4 @@ public class LectureController {
     public void deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
     }
-
 }

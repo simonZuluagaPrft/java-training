@@ -22,14 +22,13 @@ import srau.api.services.SubjectService;
 @RestController
 @RequestMapping("api/v1/subject")
 public class SubjectController {
-    
-    private final SubjectMapper subjectMapper;
     private final SubjectService subjectService;
+    private final SubjectMapper subjectMapper;
 
     @Autowired
-    public SubjectController(SubjectMapper subjectMapper, SubjectService subjectService) {
-        this.subjectMapper = subjectMapper;
+    public SubjectController(SubjectService subjectService, SubjectMapper subjectMapper) {
         this.subjectService = subjectService;
+        this.subjectMapper = subjectMapper;
     }
 
     @GetMapping
@@ -38,8 +37,7 @@ public class SubjectController {
     }
 
     @GetMapping(path = "{subjectName}")
-    public SubjectGetDto getSubjectByName(
-            @PathVariable("subjectName") String subjectName) {
+    public SubjectGetDto getSubjectByName(@PathVariable("subjectName") String subjectName) {
         Subject subject = subjectService.getSubjectByName(subjectName);
         return subjectMapper.subjectToSubjectGetDto(subject);
     }

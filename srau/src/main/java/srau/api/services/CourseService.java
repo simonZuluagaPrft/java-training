@@ -23,20 +23,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
-
     private final CourseRepository courseRepository;
     private final SubjectRepository subjectRepository;
-    private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
     private final CourseMapper courseMapper;
     private final StudentMapper studentMapper;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository, StudentRepository studentRepository, CourseMapper courseMapper, StudentMapper studentMapper) {
+    public CourseService(
+            CourseRepository courseRepository,
+            SubjectRepository subjectRepository,
+            StudentRepository studentRepository,
+            TeacherRepository teacherRepository,
+            CourseMapper courseMapper,
+            StudentMapper studentMapper) {
         this.courseRepository = courseRepository;
         this.subjectRepository = subjectRepository;
-        this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
         this.courseMapper = courseMapper;
         this.studentMapper = studentMapper;
     }
@@ -60,22 +65,18 @@ public class CourseService {
     }
 
     public void createCourse(CoursePostDto coursePostDto) {
-        Optional<Subject> optSubject = subjectRepository
-                .findById(coursePostDto.getSubjectId());
+        Optional<Subject> optSubject = subjectRepository.findById(coursePostDto.getSubjectId());
 
         if (optSubject.isEmpty()) {
-            throw new IllegalStateException(
-                    "No subject with id: " + coursePostDto.getSubjectId());
+            throw new IllegalStateException("No subject with id: " + coursePostDto.getSubjectId());
         }
 
         Subject subject = optSubject.get();
 
-        Optional<Teacher> optTeacher = teacherRepository
-                .findById(coursePostDto.getTeacherId());
+        Optional<Teacher> optTeacher = teacherRepository.findById(coursePostDto.getTeacherId());
 
         if (optTeacher.isEmpty()) {
-            throw new IllegalStateException(
-                    "No teacher with id: " + coursePostDto.getTeacherId());
+            throw new IllegalStateException("No teacher with id: " + coursePostDto.getTeacherId());
         }
 
         Teacher teacher = optTeacher.get();
@@ -94,12 +95,10 @@ public class CourseService {
 
         Course course = optCourse.get();
 
-        Optional<Teacher> optTeacher = teacherRepository
-                .findTeacherByEmail(teacherEmail);
+        Optional<Teacher> optTeacher = teacherRepository.findTeacherByEmail(teacherEmail);
 
         if (optTeacher.isEmpty()) {
-            throw new IllegalStateException(
-                    "No teacher with email: " + teacherEmail);
+            throw new IllegalStateException("No teacher with email: " + teacherEmail);
         }
 
         Teacher teacher = optTeacher.get();
@@ -111,8 +110,7 @@ public class CourseService {
         boolean exists = courseRepository.existsById(courseId);
 
         if (!exists) {
-            throw new IllegalStateException(
-                    "Course with id " + courseId + " does not exists");
+            throw new IllegalStateException("Course with id " + courseId + " does not exists");
         }
         courseRepository.deleteById(courseId);
     }
@@ -208,5 +206,4 @@ public class CourseService {
                 .map(g -> studentMapper.studentToStudentGetDto(g.getStudent()))
                 .collect(Collectors.toList());
     }
-
 }

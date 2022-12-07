@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {
-
     @Query("SELECT g FROM Grade g WHERE g.course.id = ?1 AND g.student.id = ?2")
     Optional<Grade> getByCourseIdStudentId(Long courseId, Long studentId);
 }

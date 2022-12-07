@@ -19,16 +19,17 @@ import srau.api.repositories.LectureRepository;
 
 @Service
 public class LectureService {
-
-    private final LectureRepository lectureRepository;
     private final CourseRepository courseRepository;
+    private final LectureRepository lectureRepository;
     private final LectureMapper lectureMapper;
 
     @Autowired
-    public LectureService(LectureRepository lectureRepository, CourseRepository courseRepository,
+    public LectureService(
+            CourseRepository courseRepository,
+            LectureRepository lectureRepository,
             LectureMapper lectureMapper) {
-        this.lectureRepository = lectureRepository;
         this.courseRepository = courseRepository;
+        this.lectureRepository = lectureRepository;
         this.lectureMapper = lectureMapper;
     }
 
@@ -59,7 +60,8 @@ public class LectureService {
             Integer dayOfWeek,
             Integer startHour,
             Integer finishHour) {
-        Lecture lecture = lectureRepository.findById(lectureId)
+        Lecture lecture = lectureRepository
+                .findById(lectureId)
                 .orElseThrow(() -> new IllegalStateException(
                         "Lecture with id " + lectureId + "does not exists"));
 
@@ -80,11 +82,9 @@ public class LectureService {
         boolean exists = lectureRepository.existsById(lectureId);
 
         if (!exists) {
-            throw new IllegalStateException(
-                    "Lecture with id " + lectureId + "does not exists");
+            throw new IllegalStateException("Lecture with id " + lectureId + "does not exists");
         }
 
         lectureRepository.deleteById(lectureId);
     }
-
 }

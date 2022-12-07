@@ -1,6 +1,5 @@
 package srau.api.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import srau.api.domain.Teacher;
 import srau.api.mapstruct.dto.GradePostDto;
@@ -14,16 +13,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/teacher")
 public class TeacherController {
-
     private final TeacherService teacherService;
     private final TeacherMapper teacherMapper;
 
-    @Autowired
-    public TeacherController(TeacherMapper teacherMapper, TeacherService teacherService) {
-        this.teacherMapper = teacherMapper;
+    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper) {
         this.teacherService = teacherService;
+        this.teacherMapper = teacherMapper;
     }
-
 
     @GetMapping
     public List<TeacherGetDto> getTeachers() {
@@ -31,8 +27,7 @@ public class TeacherController {
     }
 
     @GetMapping(path = "{teacherEmail}")
-    public TeacherGetDto getTeacherByEmail(
-            @PathVariable("teacherEmail") String teacherEmail) {
+    public TeacherGetDto getTeacherByEmail(@PathVariable("teacherEmail") String teacherEmail) {
         Teacher teacher = teacherService.getTeacherByEmail(teacherEmail);
         return teacherMapper.teacherToTeacherGetDto(teacher);
     }
@@ -67,6 +62,6 @@ public class TeacherController {
     public void updateStudentGrade(
             @PathVariable("teacherId") Long teacherId,
             @RequestBody GradePostDto gradePostDto) {
-        teacherService.updateGrade(teacherId, gradePostDto);
+        teacherService.updateStudentGrade(teacherId, gradePostDto);
     }
 }

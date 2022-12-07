@@ -15,16 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/course")
 public class CourseController {
-
-    private final CourseMapper courseMapper;
     private final CourseService courseService;
+    private final CourseMapper courseMapper;
 
     @Autowired
-    public CourseController(
-            CourseMapper courseMapper,
-            CourseService courseService) {
-        this.courseMapper = courseMapper;
+    public CourseController(CourseService courseService, CourseMapper courseMapper) {
         this.courseService = courseService;
+        this.courseMapper = courseMapper;
     }
 
     @GetMapping
@@ -33,8 +30,7 @@ public class CourseController {
     }
 
     @GetMapping(path = "{courseId}")
-    public CourseGetDto getCourseById(
-            @PathVariable("courseId") Long courseId) {
+    public CourseGetDto getCourseById(@PathVariable("courseId") Long courseId) {
         Course course = courseService.getCourseById(courseId);
         return courseMapper.courseToCourseGetDto(course);
     }
@@ -57,20 +53,17 @@ public class CourseController {
     }
 
     @GetMapping(path = "{courseId}/student")
-    public List<StudentGetDto> getCourseStudents(
-            @PathVariable("courseId") Long courseId) {
+    public List<StudentGetDto> getCourseStudents(@PathVariable("courseId") Long courseId) {
         return courseService.getCourseStudents(courseId);
     }
 
     @GetMapping(path = "{courseId}/passed")
-    public List<StudentGetDto> getCoursePassedStudents(
-            @PathVariable("courseId") Long courseId) {
+    public List<StudentGetDto> getCoursePassedStudents(@PathVariable("courseId") Long courseId) {
         return courseService.getCoursePassedStudents(courseId);
     }
 
     @GetMapping(path = "{courseId}/failed")
-    public List<StudentGetDto> getCourseFailedStudents(
-            @PathVariable("courseId") Long courseId) {
+    public List<StudentGetDto> getCourseFailedStudents(@PathVariable("courseId") Long courseId) {
         return courseService.getCourseFailedStudents(courseId);
     }
 
@@ -87,5 +80,4 @@ public class CourseController {
             @PathVariable("studentId") Long studentId) {
         courseService.dropStudent(courseId, studentId);
     }
-
 }

@@ -10,7 +10,6 @@ import srau.api.domain.Subject;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
-
     @Query("SELECT s FROM Subject s WHERE s.name = ?1")
     Optional<Subject> findSubjectByName(String name);
 }

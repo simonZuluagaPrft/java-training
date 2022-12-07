@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/grade")
 public class GradeController {
-
     private final GradeService gradeService;
 
     @Autowired

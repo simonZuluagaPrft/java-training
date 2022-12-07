@@ -6,8 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TeacherPostDto {
-    
     private String name;
     private String email;
-
 }

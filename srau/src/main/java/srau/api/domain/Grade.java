@@ -8,20 +8,14 @@ import lombok.ToString;
 
 @Data
 @Entity
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"student_id", "course_id"})
-        }
-)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "course_id"})})
 @EqualsAndHashCode(exclude = {"student", "course"})
 @ToString(exclude = {"student", "course"})
 public class Grade {
-
     @Id
     @GeneratedValue
     private Long id;
     private Integer score;
-
     @ManyToOne
     private Student student;
     @ManyToOne
@@ -35,5 +29,4 @@ public class Grade {
         this.student = student;
         this.course = course;
     }
-
 }

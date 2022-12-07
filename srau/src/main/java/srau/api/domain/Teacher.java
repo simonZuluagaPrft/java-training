@@ -9,13 +9,11 @@ import java.util.Set;
 @Entity
 @Table
 public class Teacher {
-
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     private String email;
-
     @OneToMany
     private Set<Course> courses;
 
@@ -26,5 +24,4 @@ public class Teacher {
         this.name = name;
         this.email = email;
     }
-
 }

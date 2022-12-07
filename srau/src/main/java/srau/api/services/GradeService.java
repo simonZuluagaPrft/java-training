@@ -17,21 +17,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class GradeService {
-
     private final GradeRepository gradeRepository;
-    private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
     private final GradeMapper gradeMapper;
 
     @Autowired
     public GradeService(
             GradeRepository gradeRepository,
-            StudentRepository studentRepository,
             CourseRepository courseRepository,
+            StudentRepository studentRepository,
             GradeMapper gradeMapper) {
         this.gradeRepository = gradeRepository;
-        this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
         this.gradeMapper = gradeMapper;
     }
 

@@ -21,14 +21,13 @@ import srau.api.services.StudentService;
 @RestController
 @RequestMapping("api/v1/student")
 public class StudentController {
-
     private final StudentService studentService;
     private final StudentMapper studentMapper;
 
     @Autowired
-    public StudentController(StudentMapper studentMapper, StudentService studentService) {
-        this.studentMapper = studentMapper;
+    public StudentController(StudentService studentService, StudentMapper studentMapper) {
         this.studentService = studentService;
+        this.studentMapper = studentMapper;
     }
 
     @GetMapping
@@ -37,8 +36,7 @@ public class StudentController {
     }
 
     @GetMapping(path = "{studentEmail}")
-    public StudentGetDto getStudentByEmail(
-            @PathVariable("studentEmail") String studentEmail) {
+    public StudentGetDto getStudentByEmail(@PathVariable("studentEmail") String studentEmail) {
         Student student = studentService.getStudentByEmail(studentEmail);
         return studentMapper.studentToStudentGetDto(student);
     }
@@ -63,8 +61,7 @@ public class StudentController {
     }
 
     @GetMapping(path = "{studentId}/course")
-    public List<CourseGetDto> getStudentCourses(
-            @PathVariable("studentId") Long studentId) {
+    public List<CourseGetDto> getStudentCourses(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentCourses(studentId);
     }
 
@@ -76,20 +73,17 @@ public class StudentController {
     }
 
     @GetMapping(path = "{studentId}/subject")
-    public List<SubjectGetDto> getStudentSubjects(
-            @PathVariable("studentId") Long studentId) {
+    public List<SubjectGetDto> getStudentSubjects(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentSubjects(studentId);
     }
 
     @GetMapping(path = "{studentId}/schedule")
-    public List<Schedule> getStudentSchedule(
-            @PathVariable("studentId") Long studentId) {
+    public List<Schedule> getStudentSchedule(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentSchedule(studentId);
     }
 
     @GetMapping(path = "{studentId}/reportCard")
-    public List<Report> getStudentReportCard(
-            @PathVariable("studentId") Long studentId) {
+    public List<Report> getStudentReportCard(@PathVariable("studentId") Long studentId) {
         return studentService.getStudentReportCard(studentId);
     }
 }

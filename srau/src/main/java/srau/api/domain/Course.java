@@ -20,22 +20,17 @@ import lombok.*;
 @Entity
 @Table
 public class Course {
-    
     @Id
     @GeneratedValue
     private Long id;
-
     @ManyToOne
     private Subject subject;
     @ManyToOne
     private Teacher teacher;
-
     @OneToMany(mappedBy = "course")
     private Set<Lecture> lectures;
-
     @OneToMany(mappedBy = "course")
     private Set<Grade> grades;
-
     @ManyToMany
     @JoinTable(
         name = "student_course",
@@ -67,5 +62,4 @@ public class Course {
         this.students.remove(student);
         student.getCourses().remove(this);
     }
-
 }

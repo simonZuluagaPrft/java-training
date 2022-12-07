@@ -7,5 +7,4 @@ import srau.api.domain.Course;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-
 }

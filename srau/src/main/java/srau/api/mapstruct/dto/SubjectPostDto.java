@@ -6,8 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SubjectPostDto {
-    
     private String name;
     private String description;
-
 }

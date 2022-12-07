@@ -19,16 +19,13 @@ import lombok.ToString;
 @Entity
 @Table
 public class Student {
-
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     private String email;
-
     @OneToMany(mappedBy = "student")
     private Set<Grade> grades;
-
     @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
 
@@ -39,5 +36,4 @@ public class Student {
         this.name = name;
         this.email = email;
     }
-
 }

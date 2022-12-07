@@ -8,10 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SubjectGetDto {
-
     @Id
     private Long id;
     private String name;
     private String description;
-
 }

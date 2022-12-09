@@ -6,6 +6,9 @@ import srau.api.domain.Course;
 import srau.api.domain.Grade;
 import srau.api.domain.Student;
 import srau.api.domain.Teacher;
+import srau.api.exception.BussinesLogicException;
+import srau.api.exception.ElementNotFoundException;
+import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
@@ -55,31 +58,28 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
-    public Teacher getTeacherByEmail(String teacherEmail) {
-        Optional<Teacher> optTeacher = teacherRepository.findTeacherByEmail(teacherEmail);
-
-        if (optTeacher.isEmpty()) {
-            throw new IllegalStateException("No teacher with email: " + teacherEmail);
-        }
-
-        return optTeacher.get();
+    public Teacher getTeacherByEmail(String teacherEmail) throws ElementNotFoundException {
+        return teacherRepository.findTeacherByEmail(teacherEmail)
+                .orElseThrow(() ->
+                        new ElementNotFoundException("No teacher with email: " + teacherEmail));
     }
 
-    public void createTeacher(Teacher teacher) {
+    public void createTeacher(Teacher teacher) throws ElementTakenException {
         Optional<Teacher> teacherOptional = teacherRepository
                 .findTeacherByEmail(teacher.getEmail());
 
         if (teacherOptional.isPresent()) {
-            throw new IllegalStateException("Email taken");
+            throw new ElementTakenException("Email taken");
         }
         teacherRepository.save(teacher);
     }
 
     @Transactional
-    public TeacherGetDto updateTeacher(Long teacherId, String name, String email) {
+    public TeacherGetDto updateTeacher(Long teacherId, String name, String email)
+            throws ElementNotFoundException, ElementTakenException {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "teacher with id " + teacherId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No teacher with id: " + teacherId));
 
         if (name != null &&
                 name.length() > 0 &&
@@ -95,7 +95,7 @@ public class TeacherService {
                     .findTeacherByEmail(email);
 
             if (teacherOptional.isPresent()) {
-                throw new IllegalStateException("email taken");
+                throw new ElementTakenException("Email taken");
             }
 
             teacher.setEmail(email);
@@ -104,42 +104,41 @@ public class TeacherService {
         return teacherMapper.teacherToTeacherGetDto(teacher);
     }
 
-    public void deleteTeacher(Long teacherId) {
+    public void deleteTeacher(Long teacherId) throws ElementNotFoundException {
         boolean exists = teacherRepository.existsById(teacherId);
 
         if (!exists) {
-            throw new IllegalStateException("Teacher with id " + teacherId + " does not exists");
+            throw new ElementNotFoundException("No teacher with id: " + teacherId);
         }
         teacherRepository.deleteById(teacherId);
     }
 
-    public void gradeStudent(Long teacherId, GradePostDto gradePostDto) {
+    public void gradeStudent(Long teacherId, GradePostDto gradePostDto)
+            throws ElementNotFoundException, BussinesLogicException {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "teacher with id " + teacherId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No teacher with id: " + teacherId));
 
         Course course = courseRepository.findById(gradePostDto.getCourseId())
-                .orElseThrow(() -> new IllegalStateException(
-                        "course with id " + gradePostDto.getCourseId() + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + gradePostDto.getCourseId()));
 
         Student student = studentRepository.findById(gradePostDto.getStudentId())
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + gradePostDto.getStudentId() + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + gradePostDto.getStudentId()));
 
         if (course.getTeacher() != teacher) {
-            throw new IllegalStateException(
-                    "teacher doesn't teach course with id: " + course.getId());
+            throw new BussinesLogicException("Teacher doesn't teach the course");
         }
 
         if (!course.getStudents().contains(student)) {
-            throw new IllegalStateException(
-                    "student with id: " + student.getId() + " is not enrolled in that course");
+            throw new BussinesLogicException("Student is not enrolled in the course");
         }
 
-        Optional<Grade> optGrade = gradeRepository.getByCourseIdStudentId(course.getId(), student.getId());
+        Optional<Grade> optGrade = gradeRepository
+                .getByCourseIdStudentId(course.getId(), student.getId());
         if (optGrade.isPresent()) {
-            throw new IllegalStateException(
-                    "this student has been already graded in the course");
+            throw new BussinesLogicException("The student has been already graded in the course");
         }
 
         Grade grade = new Grade(gradePostDto.getScore(), student, course);
@@ -147,36 +146,32 @@ public class TeacherService {
     }
 
     @Transactional
-    public GradeGetDto updateStudentGrade(Long teacherId, GradePostDto gradePostDto) {
+    public GradeGetDto updateStudentGrade(Long teacherId, GradePostDto gradePostDto)
+            throws ElementNotFoundException, BussinesLogicException {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "teacher with id " + teacherId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No teacher with id: " + teacherId));
 
-        Course course = courseRepository
-                .findById(gradePostDto.getCourseId())
-                .orElseThrow(() -> new IllegalStateException(
-                        "course with id " + gradePostDto.getCourseId() + " does not exists"));
+        Course course = courseRepository.findById(gradePostDto.getCourseId())
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + gradePostDto.getCourseId()));
 
-        Student student = studentRepository
-                .findById(gradePostDto.getStudentId())
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + gradePostDto.getStudentId() + " does not exists"));
+        Student student = studentRepository.findById(gradePostDto.getStudentId())
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + gradePostDto.getStudentId()));
 
         if (course.getTeacher() != teacher) {
-            throw new IllegalStateException(
-                    "teacher doesn't teach course with id: " + course.getId());
+            throw new BussinesLogicException("Teacher doesn't teach the course");
         }
 
         if (!course.getStudents().contains(student)) {
-            throw new IllegalStateException(
-                    "student with id: " + student.getId() + " is not enrolled in that course");
+            throw new BussinesLogicException("Student is not enrolled in the course");
         }
 
         Optional<Grade> optGrade = gradeRepository
                 .getByCourseIdStudentId(course.getId(), student.getId());
         if (optGrade.isEmpty()) {
-            throw new IllegalStateException(
-                    "this student has not been graded in the course");
+            throw new BussinesLogicException("The student has not been graded in the course");
         }
 
         Grade grade = optGrade.get();

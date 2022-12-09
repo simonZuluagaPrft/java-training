@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import srau.api.domain.Course;
+import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.CourseGetDto;
 import srau.api.mapstruct.dto.CoursePostDto;
 import srau.api.mapstruct.dto.StudentGetDto;
@@ -32,13 +33,15 @@ public class CourseController {
     }
 
     @GetMapping(path = "{courseId}")
-    public ResponseEntity<CourseGetDto> getCourseById(@PathVariable("courseId") Long courseId) {
+    public ResponseEntity<CourseGetDto> getCourseById(@PathVariable("courseId") Long courseId)
+            throws ElementNotFoundException {
         Course course = courseService.getCourseById(courseId);
         return new ResponseEntity<>(courseMapper.courseToCourseGetDto(course), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createCourse(@RequestBody CoursePostDto coursePostDto) {
+    public ResponseEntity<HttpStatus> createCourse(@RequestBody CoursePostDto coursePostDto)
+            throws ElementNotFoundException {
         courseService.createCourse(coursePostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -46,39 +49,40 @@ public class CourseController {
     @PutMapping(path = "{courseId}")
     public ResponseEntity<CourseGetDto> changeCourseTeacher(
             @PathVariable("courseId") Long courseId,
-            @RequestParam(required = true) String teacherEmail) {
+            @RequestParam(required = true) String teacherEmail) throws ElementNotFoundException {
         CourseGetDto course = courseService.changeCourseTeacher(courseId, teacherEmail);
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{courseId}")
-    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable("courseId") Long courseId) {
+    public ResponseEntity<HttpStatus> deleteCourse(@PathVariable("courseId") Long courseId)
+            throws ElementNotFoundException {
         courseService.deleteCourse(courseId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = "{courseId}/student")
     public ResponseEntity<List<StudentGetDto>> getCourseStudents(
-            @PathVariable("courseId") Long courseId) {
+            @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCourseStudents(courseId), HttpStatus.OK);
     }
 
     @GetMapping(path = "{courseId}/passed")
     public ResponseEntity<List<StudentGetDto>> getCoursePassedStudents(
-            @PathVariable("courseId") Long courseId) {
+            @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCoursePassedStudents(courseId), HttpStatus.OK);
     }
 
     @GetMapping(path = "{courseId}/failed")
     public ResponseEntity<List<StudentGetDto>> getCourseFailedStudents(
-            @PathVariable("courseId") Long courseId) {
+            @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCourseFailedStudents(courseId), HttpStatus.OK);
     }
 
     @PostMapping(path = "{courseId}/student")
     public ResponseEntity<HttpStatus> enrollStudent(
             @PathVariable("courseId") Long courseId,
-            @RequestBody StudentIdDto studentIdDto) {
+            @RequestBody StudentIdDto studentIdDto) throws ElementNotFoundException {
         courseService.enrollStudent(courseId, studentIdDto.getStudentId());
         System.out.println(HttpStatus.CREATED.getClass());
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -87,7 +91,7 @@ public class CourseController {
     @DeleteMapping(path = "{courseId}/student/{studentId}")
     public ResponseEntity<HttpStatus> dropStudent(
             @PathVariable("courseId") Long courseId,
-            @PathVariable("studentId") Long studentId) {
+            @PathVariable("studentId") Long studentId) throws ElementNotFoundException {
         courseService.dropStudent(courseId, studentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

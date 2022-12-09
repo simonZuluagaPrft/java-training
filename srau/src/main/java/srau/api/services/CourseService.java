@@ -6,6 +6,7 @@ import srau.api.domain.Course;
 import srau.api.domain.Student;
 import srau.api.domain.Subject;
 import srau.api.domain.Teacher;
+import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.CourseGetDto;
 import srau.api.mapstruct.dto.CoursePostDto;
 import srau.api.mapstruct.dto.StudentGetDto;
@@ -18,7 +19,6 @@ import srau.api.repositories.TeacherRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,118 +54,79 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    public Course getCourseById(Long courseId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
-
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        return optCourse.get();
+    public Course getCourseById(Long courseId) throws ElementNotFoundException {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
     }
 
-    public void createCourse(CoursePostDto coursePostDto) {
-        Optional<Subject> optSubject = subjectRepository.findById(coursePostDto.getSubjectId());
+    public void createCourse(CoursePostDto coursePostDto) throws ElementNotFoundException {
+        Subject subject = subjectRepository.findById(coursePostDto.getSubjectId())
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No subject with id: " + coursePostDto.getSubjectId()));
 
-        if (optSubject.isEmpty()) {
-            throw new IllegalStateException("No subject with id: " + coursePostDto.getSubjectId());
-        }
-
-        Subject subject = optSubject.get();
-
-        Optional<Teacher> optTeacher = teacherRepository.findById(coursePostDto.getTeacherId());
-
-        if (optTeacher.isEmpty()) {
-            throw new IllegalStateException("No teacher with id: " + coursePostDto.getTeacherId());
-        }
-
-        Teacher teacher = optTeacher.get();
+        Teacher teacher = teacherRepository.findById(coursePostDto.getTeacherId())
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No teacher with id: " + coursePostDto.getTeacherId()));
 
         Course course = new Course(subject, teacher);
         courseRepository.save(course);
     }
 
     @Transactional
-    public CourseGetDto changeCourseTeacher(Long courseId, String teacherEmail) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
+    public CourseGetDto changeCourseTeacher(Long courseId, String teacherEmail)
+            throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
-
-        Optional<Teacher> optTeacher = teacherRepository.findTeacherByEmail(teacherEmail);
-
-        if (optTeacher.isEmpty()) {
-            throw new IllegalStateException("No teacher with email: " + teacherEmail);
-        }
-
-        Teacher teacher = optTeacher.get();
+        Teacher teacher = teacherRepository.findTeacherByEmail(teacherEmail)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No teacher with email: " + teacherEmail));
 
         course.setTeacher(teacher);
         return courseMapper.courseToCourseGetDto(course);
     }
 
-    public void deleteCourse(Long courseId) {
+    public void deleteCourse(Long courseId) throws ElementNotFoundException {
         boolean exists = courseRepository.existsById(courseId);
 
         if (!exists) {
-            throw new IllegalStateException("Course with id " + courseId + " does not exists");
+            throw new ElementNotFoundException("Course with id " + courseId + " does not exists");
         }
         courseRepository.deleteById(courseId);
     }
 
-    public void enrollStudent(Long courseId, Long studentId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
+    public void enrollStudent(Long courseId, Long studentId) throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
-
-        Optional<Student> optStudent = studentRepository.findById(studentId);
-
-        if (optStudent.isEmpty()) {
-            throw new IllegalStateException("No student with id: " + studentId);
-        }
-
-        Student student = optStudent.get();
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         course.addStudent(student);
         courseRepository.save(course);
     }
 
-    public void dropStudent(Long courseId, Long studentId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
+    public void dropStudent(Long courseId, Long studentId) throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
-
-        Optional<Student> optStudent = studentRepository.findById(studentId);
-
-        if (optStudent.isEmpty()) {
-            throw new IllegalStateException("No student with id: " + studentId);
-        }
-
-        Student student = optStudent.get();
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         course.deleteStudent(student);
         courseRepository.save(course);
     }
 
-    public List<StudentGetDto> getCourseStudents(Long courseId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
-
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
+    public List<StudentGetDto> getCourseStudents(Long courseId) throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
         return course
                 .getStudents()
@@ -174,14 +135,11 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudentGetDto> getCoursePassedStudents(Long courseId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
-
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
+    public List<StudentGetDto> getCoursePassedStudents(Long courseId)
+            throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
         return course
                 .getGrades()
@@ -191,14 +149,11 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudentGetDto> getCourseFailedStudents(Long courseId) {
-        Optional<Course> optCourse = courseRepository.findById(courseId);
-
-        if (optCourse.isEmpty()) {
-            throw new IllegalStateException("No course with id: " + courseId);
-        }
-
-        Course course = optCourse.get();
+    public List<StudentGetDto> getCourseFailedStudents(Long courseId)
+            throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No course with id: " + courseId));
 
         return course
                 .getGrades()

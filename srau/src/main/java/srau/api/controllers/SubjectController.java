@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import srau.api.domain.Subject;
+import srau.api.exception.ElementNotFoundException;
+import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.SubjectGetDto;
 import srau.api.mapstruct.dto.SubjectPostDto;
 import srau.api.mapstruct.mapper.SubjectMapper;
@@ -40,13 +42,14 @@ public class SubjectController {
 
     @GetMapping(path = "{subjectName}")
     public ResponseEntity<SubjectGetDto> getSubjectByName(
-            @PathVariable("subjectName") String subjectName) {
+            @PathVariable("subjectName") String subjectName) throws ElementNotFoundException {
         Subject subject = subjectService.getSubjectByName(subjectName);
         return new ResponseEntity<>(subjectMapper.subjectToSubjectGetDto(subject), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createSubject(@RequestBody SubjectPostDto subjectPostDto) {
+    public ResponseEntity<HttpStatus> createSubject(@RequestBody SubjectPostDto subjectPostDto)
+            throws ElementTakenException {
         Subject subject = subjectMapper.subjectPostDtoToSubject(subjectPostDto);
         subjectService.createSubject(subject);
 
@@ -57,14 +60,16 @@ public class SubjectController {
     public ResponseEntity<SubjectGetDto> updateSubject(
             @PathVariable("subjectId") Long subjectId,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email) {
+            @RequestParam(required = false) String email)
+            throws ElementNotFoundException, ElementTakenException {
         SubjectGetDto subjectGetDto = subjectService.updateSubject(subjectId, name, email);
 
         return new ResponseEntity<>(subjectGetDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{subjectId}")
-    public ResponseEntity<HttpStatus> deleteSubject(@PathVariable("subjectId") Long subjectId) {
+    public ResponseEntity<HttpStatus> deleteSubject(@PathVariable("subjectId") Long subjectId)
+            throws ElementNotFoundException {
         subjectService.deleteSubject(subjectId);
 
         return new ResponseEntity<>(HttpStatus.OK);

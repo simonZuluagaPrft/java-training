@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import srau.api.domain.Grade;
 import srau.api.domain.Lecture;
 import srau.api.domain.Student;
+import srau.api.exception.ElementNotFoundException;
+import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.*;
 import srau.api.mapstruct.mapper.CourseMapper;
 import srau.api.mapstruct.mapper.StudentMapper;
@@ -51,31 +53,28 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public Student getStudentByEmail(String studentEmail) {
-        Optional<Student> optStudent = studentRepository.findStudentByEmail(studentEmail);
-
-        if (optStudent.isEmpty()) {
-            throw new IllegalStateException("No student with email: " + studentEmail);
-        }
-
-        return optStudent.get();
+    public Student getStudentByEmail(String studentEmail) throws ElementNotFoundException {
+        return studentRepository.findStudentByEmail(studentEmail)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with email: " + studentEmail));
     }
 
-    public void createStudent(Student student) {
+    public void createStudent(Student student) throws ElementTakenException {
         Optional<Student> studentOptional = studentRepository
                 .findStudentByEmail(student.getEmail());
 
         if (studentOptional.isPresent()) {
-            throw new IllegalStateException("Email taken");
+            throw new ElementTakenException("Email taken");
         }
         studentRepository.save(student);
     }
 
     @Transactional
-    public StudentGetDto updateStudent(Long studentId, String name, String email) {
+    public StudentGetDto updateStudent(Long studentId, String name, String email)
+            throws ElementNotFoundException, ElementTakenException {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + studentId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         if (name != null &&
                 name.length() > 0 &&
@@ -91,7 +90,7 @@ public class StudentService {
                     .findStudentByEmail(email);
 
             if (studentOptional.isPresent()) {
-                throw new IllegalStateException("email taken");
+                throw new ElementTakenException("email taken");
             }
 
             student.setEmail(email);
@@ -100,20 +99,20 @@ public class StudentService {
         return studentMapper.studentToStudentGetDto(student);
     }
 
-    public void deleteStudent(Long studentId) {
+    public void deleteStudent(Long studentId) throws ElementNotFoundException {
         boolean exists = studentRepository.existsById(studentId);
 
         if (!exists) {
-            throw new IllegalStateException("Student with id " + studentId + " does not exists");
+            throw new ElementNotFoundException("No student with id " + studentId);
         }
 
         studentRepository.deleteById(studentId);
     }
 
-    public List<CourseGetDto> getStudentCourses(Long studentId) {
+    public List<CourseGetDto> getStudentCourses(Long studentId) throws ElementNotFoundException {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + studentId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         return student
                 .getCourses()
@@ -122,21 +121,18 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public Integer getStudentGrade(Long studentId, Long courseId) {
-        Optional<Grade> optGrade = gradeRepository.getByCourseIdStudentId(courseId, studentId);
-        if (optGrade.isEmpty()) {
-            throw new IllegalStateException(
-                    "this student has not been graded in the course");
-        }
+    public Integer getStudentGrade(Long studentId, Long courseId) throws ElementNotFoundException {
+        Grade grade = gradeRepository.getByCourseIdStudentId(courseId, studentId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "This student has not been graded in the course"));
 
-        Grade grade = optGrade.get();
         return grade.getScore();
     }
 
-    public List<SubjectGetDto> getStudentSubjects(Long studentId) {
+    public List<SubjectGetDto> getStudentSubjects(Long studentId) throws ElementNotFoundException {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + studentId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         return student.getCourses()
                 .stream()
@@ -144,10 +140,10 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public List<Schedule> getStudentSchedule(Long studentId) {
+    public List<Schedule> getStudentSchedule(Long studentId) throws ElementNotFoundException {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + studentId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         List<List<Lecture>> lectureList = student
                 .getCourses()
@@ -172,10 +168,10 @@ public class StudentService {
         return scheduleList;
     }
 
-    public List<Report> getStudentReportCard(Long studentId) {
+    public List<Report> getStudentReportCard(Long studentId) throws ElementNotFoundException {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "student with id " + studentId + " does not exists"));
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No student with id: " + studentId));
 
         return student
                 .getGrades()

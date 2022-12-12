@@ -12,6 +12,7 @@ import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
+import srau.api.mapstruct.dto.TeacherPostDto;
 import srau.api.mapstruct.mapper.GradeMapper;
 import srau.api.mapstruct.mapper.TeacherMapper;
 import srau.api.repositories.CourseRepository;
@@ -58,20 +59,23 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
-    public Teacher getTeacherByEmail(String teacherEmail) throws ElementNotFoundException {
-        return teacherRepository.findTeacherByEmail(teacherEmail)
+    public TeacherGetDto getTeacherByEmail(String teacherEmail) throws ElementNotFoundException {
+        Teacher teacher = teacherRepository.findTeacherByEmail(teacherEmail)
                 .orElseThrow(() ->
                         new ElementNotFoundException("No teacher with email: " + teacherEmail));
+
+        return teacherMapper.teacherToTeacherGetDto(teacher);
     }
 
-    public void createTeacher(Teacher teacher) throws ElementTakenException {
+    public void createTeacher(TeacherPostDto teacherPostDto) throws ElementTakenException {
         Optional<Teacher> teacherOptional = teacherRepository
-                .findTeacherByEmail(teacher.getEmail());
+                .findTeacherByEmail(teacherPostDto.getEmail());
 
         if (teacherOptional.isPresent()) {
             throw new ElementTakenException("Email taken");
         }
-        teacherRepository.save(teacher);
+
+        teacherRepository.save(teacherMapper.teacherPostDtoToTeacher(teacherPostDto));
     }
 
     @Transactional

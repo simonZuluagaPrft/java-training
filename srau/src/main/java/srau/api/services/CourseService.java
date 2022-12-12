@@ -54,10 +54,12 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    public Course getCourseById(Long courseId) throws ElementNotFoundException {
-        return courseRepository.findById(courseId)
+    public CourseGetDto getCourseById(Long courseId) throws ElementNotFoundException {
+        Course course =courseRepository.findById(courseId)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No course with id: " + courseId));
+
+        return courseMapper.courseToCourseGetDto(course);
     }
 
     public void createCourse(CoursePostDto coursePostDto) throws ElementNotFoundException {

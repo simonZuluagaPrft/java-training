@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import srau.api.domain.Student;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.*;
-import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.services.StudentService;
 
 import java.util.List;
@@ -17,12 +15,10 @@ import java.util.List;
 @RequestMapping("api/v1/student")
 public class StudentController {
     private final StudentService studentService;
-    private final StudentMapper studentMapper;
 
     @Autowired
-    public StudentController(StudentService studentService, StudentMapper studentMapper) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.studentMapper = studentMapper;
     }
 
     @GetMapping
@@ -33,15 +29,12 @@ public class StudentController {
     @GetMapping(path = "{studentEmail}")
     public ResponseEntity<StudentGetDto> getStudentByEmail(
             @PathVariable("studentEmail") String studentEmail) throws ElementNotFoundException {
-        StudentGetDto studentGetDto = studentMapper
-                .studentToStudentGetDto(studentService.getStudentByEmail(studentEmail));
-        return new ResponseEntity<>(studentGetDto, HttpStatus.OK);
+        return new ResponseEntity<>(studentService.getStudentByEmail(studentEmail), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<HttpStatus> createStudent(@RequestBody StudentPostDto studentPostDto) throws ElementTakenException {
-        Student student = studentMapper.studentPostDtoToStudent(studentPostDto);
-        studentService.createStudent(student);
+        studentService.createStudent(studentPostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

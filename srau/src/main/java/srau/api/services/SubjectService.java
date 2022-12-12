@@ -6,6 +6,7 @@ import srau.api.domain.Subject;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.SubjectGetDto;
+import srau.api.mapstruct.dto.SubjectPostDto;
 import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.repositories.SubjectRepository;
 
@@ -34,19 +35,23 @@ public class SubjectService {
                 .collect(Collectors.toList());
     }
 
-    public Subject getSubjectByName(String subjectName) throws ElementNotFoundException {
-        return subjectRepository.findSubjectByName(subjectName)
+    public SubjectGetDto getSubjectByName(String subjectName) throws ElementNotFoundException {
+        Subject subject = subjectRepository.findSubjectByName(subjectName)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No subject with name: " + subjectName));
+
+        return subjectMapper.subjectToSubjectGetDto(subject);
     }
 
-    public void createSubject(Subject subject) throws ElementTakenException {
-        Optional<Subject> subjectOptional = subjectRepository.findSubjectByName(subject.getName());
+    public void createSubject(SubjectPostDto subjectPostDto) throws ElementTakenException {
+        Optional<Subject> subjectOptional = subjectRepository
+                .findSubjectByName(subjectPostDto.getName());
 
         if (subjectOptional.isPresent()) {
             throw new ElementTakenException("Name taken");
         }
-        subjectRepository.save(subject);
+
+        subjectRepository.save(subjectMapper.subjectPostDtoToSubject(subjectPostDto));
     }
 
     @Transactional

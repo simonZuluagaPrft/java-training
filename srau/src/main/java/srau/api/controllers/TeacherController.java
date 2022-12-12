@@ -3,7 +3,6 @@ package srau.api.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import srau.api.domain.Teacher;
 import srau.api.exception.BussinesLogicException;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
@@ -11,7 +10,6 @@ import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.dto.TeacherGetDto;
 import srau.api.mapstruct.dto.TeacherPostDto;
-import srau.api.mapstruct.mapper.TeacherMapper;
 import srau.api.services.TeacherService;
 
 import java.util.List;
@@ -20,11 +18,9 @@ import java.util.List;
 @RequestMapping("api/v1/teacher")
 public class TeacherController {
     private final TeacherService teacherService;
-    private final TeacherMapper teacherMapper;
 
-    public TeacherController(TeacherService teacherService, TeacherMapper teacherMapper) {
+    public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
-        this.teacherMapper = teacherMapper;
     }
 
     @GetMapping
@@ -35,15 +31,13 @@ public class TeacherController {
     @GetMapping(path = "{teacherEmail}")
     public ResponseEntity<TeacherGetDto> getTeacherByEmail(
             @PathVariable("teacherEmail") String teacherEmail) throws ElementNotFoundException {
-        Teacher teacher = teacherService.getTeacherByEmail(teacherEmail);
-        return new ResponseEntity<>(teacherMapper.teacherToTeacherGetDto(teacher), HttpStatus.OK);
+        return new ResponseEntity<>(teacherService.getTeacherByEmail(teacherEmail), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<HttpStatus> createTeacher(@RequestBody TeacherPostDto teacherPostDto)
             throws ElementTakenException {
-        Teacher teacher = teacherMapper.teacherPostDtoToTeacher(teacherPostDto);
-        teacherService.createTeacher(teacher);
+        teacherService.createTeacher(teacherPostDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

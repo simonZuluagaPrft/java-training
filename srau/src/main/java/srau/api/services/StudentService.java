@@ -53,20 +53,23 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public Student getStudentByEmail(String studentEmail) throws ElementNotFoundException {
-        return studentRepository.findStudentByEmail(studentEmail)
+    public StudentGetDto getStudentByEmail(String studentEmail) throws ElementNotFoundException {
+        Student student = studentRepository.findStudentByEmail(studentEmail)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No student with email: " + studentEmail));
+
+        return studentMapper.studentToStudentGetDto(student);
     }
 
-    public void createStudent(Student student) throws ElementTakenException {
+    public void createStudent(StudentPostDto studentPostDto) throws ElementTakenException {
         Optional<Student> studentOptional = studentRepository
-                .findStudentByEmail(student.getEmail());
+                .findStudentByEmail(studentPostDto.getEmail());
 
         if (studentOptional.isPresent()) {
             throw new ElementTakenException("Email taken");
         }
-        studentRepository.save(student);
+
+        studentRepository.save(studentMapper.studentPostDtoToStudent(studentPostDto));
     }
 
     @Transactional

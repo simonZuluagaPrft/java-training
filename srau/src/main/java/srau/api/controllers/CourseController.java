@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import srau.api.domain.Course;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.CourseGetDto;
 import srau.api.mapstruct.dto.CoursePostDto;
 import srau.api.mapstruct.dto.StudentGetDto;
 import srau.api.mapstruct.dto.StudentIdDto;
-import srau.api.mapstruct.mapper.CourseMapper;
 import srau.api.services.CourseService;
 
 import java.util.List;
@@ -19,12 +17,10 @@ import java.util.List;
 @RequestMapping("api/v1/course")
 public class CourseController {
     private final CourseService courseService;
-    private final CourseMapper courseMapper;
 
     @Autowired
-    public CourseController(CourseService courseService, CourseMapper courseMapper) {
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
-        this.courseMapper = courseMapper;
     }
 
     @GetMapping
@@ -35,8 +31,7 @@ public class CourseController {
     @GetMapping(path = "{courseId}")
     public ResponseEntity<CourseGetDto> getCourseById(@PathVariable("courseId") Long courseId)
             throws ElementNotFoundException {
-        Course course = courseService.getCourseById(courseId);
-        return new ResponseEntity<>(courseMapper.courseToCourseGetDto(course), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCourseById(courseId), HttpStatus.OK);
     }
 
     @PostMapping

@@ -1,38 +1,25 @@
 package srau.api.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import srau.api.domain.Subject;
+import org.springframework.web.bind.annotation.*;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.SubjectGetDto;
 import srau.api.mapstruct.dto.SubjectPostDto;
-import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.services.SubjectService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/subject")
 public class SubjectController {
     private final SubjectService subjectService;
-    private final SubjectMapper subjectMapper;
 
     @Autowired
-    public SubjectController(SubjectService subjectService, SubjectMapper subjectMapper) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
-        this.subjectMapper = subjectMapper;
     }
 
     @GetMapping
@@ -43,15 +30,13 @@ public class SubjectController {
     @GetMapping(path = "{subjectName}")
     public ResponseEntity<SubjectGetDto> getSubjectByName(
             @PathVariable("subjectName") String subjectName) throws ElementNotFoundException {
-        Subject subject = subjectService.getSubjectByName(subjectName);
-        return new ResponseEntity<>(subjectMapper.subjectToSubjectGetDto(subject), HttpStatus.OK);
+        return new ResponseEntity<>(subjectService.getSubjectByName(subjectName), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<HttpStatus> createSubject(@RequestBody SubjectPostDto subjectPostDto)
             throws ElementTakenException {
-        Subject subject = subjectMapper.subjectPostDtoToSubject(subjectPostDto);
-        subjectService.createSubject(subject);
+        subjectService.createSubject(subjectPostDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

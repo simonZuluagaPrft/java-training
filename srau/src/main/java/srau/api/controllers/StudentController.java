@@ -9,6 +9,7 @@ import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.*;
 import srau.api.services.StudentService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,9 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createStudent(@RequestBody StudentPostDto studentPostDto) throws ElementTakenException {
+    public ResponseEntity<HttpStatus> createStudent(
+            @RequestBody @Valid StudentPostDto studentPostDto)
+            throws ElementTakenException {
         studentService.createStudent(studentPostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

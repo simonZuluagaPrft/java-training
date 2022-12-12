@@ -10,6 +10,7 @@ import srau.api.mapstruct.dto.SubjectGetDto;
 import srau.api.mapstruct.dto.SubjectPostDto;
 import srau.api.services.SubjectService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,8 @@ public class SubjectController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createSubject(@RequestBody SubjectPostDto subjectPostDto)
+    public ResponseEntity<HttpStatus> createSubject(
+            @RequestBody @Valid SubjectPostDto subjectPostDto)
             throws ElementTakenException {
         subjectService.createSubject(subjectPostDto);
 

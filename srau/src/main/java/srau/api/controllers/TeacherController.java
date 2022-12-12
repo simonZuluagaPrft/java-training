@@ -12,6 +12,7 @@ import srau.api.mapstruct.dto.TeacherGetDto;
 import srau.api.mapstruct.dto.TeacherPostDto;
 import srau.api.services.TeacherService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,8 @@ public class TeacherController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createTeacher(@RequestBody TeacherPostDto teacherPostDto)
+    public ResponseEntity<HttpStatus> createTeacher(
+            @RequestBody @Valid TeacherPostDto teacherPostDto)
             throws ElementTakenException {
         teacherService.createTeacher(teacherPostDto);
 

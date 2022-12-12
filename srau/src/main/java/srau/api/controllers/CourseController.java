@@ -11,6 +11,7 @@ import srau.api.mapstruct.dto.StudentGetDto;
 import srau.api.mapstruct.dto.StudentIdDto;
 import srau.api.services.CourseService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createCourse(@RequestBody CoursePostDto coursePostDto)
+    public ResponseEntity<HttpStatus> createCourse(@RequestBody @Valid CoursePostDto coursePostDto)
             throws ElementNotFoundException {
         courseService.createCourse(coursePostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);

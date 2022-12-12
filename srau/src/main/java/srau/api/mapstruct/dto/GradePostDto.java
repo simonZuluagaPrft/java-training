@@ -6,9 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GradePostDto {
-
     private Integer score;
     private Long studentId;
     private Long courseId;
-
 }

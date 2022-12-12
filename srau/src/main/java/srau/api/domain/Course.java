@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.*;
 
@@ -23,8 +24,10 @@ public class Course {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull(message = "Course needs a subject")
     @ManyToOne
     private Subject subject;
+    @NotNull(message = "Course needs a teacher")
     @ManyToOne
     private Teacher teacher;
     @OneToMany(mappedBy = "course")

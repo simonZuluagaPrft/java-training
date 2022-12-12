@@ -3,6 +3,8 @@ package srau.api.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -12,7 +14,9 @@ public class Teacher {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull(message = "Teacher should have a name")
     private String name;
+    @Email(message = "Invalid email")
     private String email;
     @OneToMany
     private Set<Course> courses;

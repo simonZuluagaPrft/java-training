@@ -1,9 +1,10 @@
 package srau.api.domain;
 
-import javax.persistence.*;
-
 import lombok.Data;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
@@ -13,7 +14,9 @@ public class Subject {
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull(message = "Subject should have a name")
     private String name;
+    @Size(max = 512, message = "Description should be at max 512 characters")
     private String description;
     @OneToMany
     private Set<Course> courses;

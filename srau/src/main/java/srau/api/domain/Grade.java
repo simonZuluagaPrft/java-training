@@ -1,6 +1,7 @@
 package srau.api.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,8 +17,10 @@ public class Grade {
     @GeneratedValue
     private Long id;
     private Integer score;
+    @NotNull(message = "Grade needs a student")
     @ManyToOne
     private Student student;
+    @NotNull(message = "Course needs a course")
     @ManyToOne
     private Course course;
 

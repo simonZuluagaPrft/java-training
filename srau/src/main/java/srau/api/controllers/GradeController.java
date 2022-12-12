@@ -8,6 +8,7 @@ import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.services.GradeService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class GradeController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createGrade(@RequestBody GradePostDto gradePostDto) {
+    public ResponseEntity<HttpStatus> createGrade(@RequestBody @Valid GradePostDto gradePostDto) {
         gradeService.createGrade(gradePostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

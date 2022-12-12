@@ -19,6 +19,8 @@ import srau.api.mapstruct.dto.LectureGetDto;
 import srau.api.mapstruct.dto.LecturePostDto;
 import srau.api.services.LectureService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/v1/lecture")
 public class LectureController {
@@ -35,7 +37,8 @@ public class LectureController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createLecture(@RequestBody LecturePostDto lecturePostDto) {
+    public ResponseEntity<HttpStatus> createLecture(
+            @RequestBody @Valid  LecturePostDto lecturePostDto) {
         lectureService.createLecture(lecturePostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -52,8 +55,8 @@ public class LectureController {
     }
 
     @DeleteMapping(path = "{lectureId}")
-    public ResponseEntity deleteLecture(@PathVariable("lectureId") Long lectureId) {
+    public ResponseEntity<HttpStatus> deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

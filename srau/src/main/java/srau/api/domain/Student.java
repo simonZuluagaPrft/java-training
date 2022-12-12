@@ -26,6 +26,7 @@ public class Student {
     private Long id;
     @NotBlank(message = "Student should have a name")
     private String name;
+    @NotBlank(message = "Student should have an email")
     @Email(message = "Invalid email address")
     private String email;
     @OneToMany(mappedBy = "student")

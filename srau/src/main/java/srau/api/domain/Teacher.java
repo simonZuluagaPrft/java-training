@@ -16,6 +16,7 @@ public class Teacher {
     private Long id;
     @NotBlank(message = "Teacher should have a name")
     private String name;
+    @NotBlank(message = "Teacher should have an email")
     @Email(message = "Invalid email")
     private String email;
     @OneToMany

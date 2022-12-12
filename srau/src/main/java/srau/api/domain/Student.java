@@ -9,7 +9,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +24,7 @@ public class Student {
     @Id
     @GeneratedValue
     private Long id;
-    @NotNull(message = "Student should have a name")
+    @NotBlank(message = "Student should have a name")
     private String name;
     @Email(message = "Invalid email address")
     private String email;

@@ -13,6 +13,7 @@ import java.util.List;
 public class InitConfig {
     @Bean
     CommandLineRunner initCommandLineRunner(
+            AppUserRepository appUserRepository,
             StudentRepository studentRepository,
             SubjectRepository subjectRepository,
             TeacherRepository teacherRepository,
@@ -20,6 +21,10 @@ public class InitConfig {
             LectureRepository lectureRepository,
             GradeRepository gradeRepository) {
         return args -> {
+            AppUser lucy = new AppUser("lucy", "lucy@gmail.com", "netrunner");
+            AppUser david = new AppUser("david", "david@gmail.com", "cyberpunk");
+            appUserRepository.saveAll(List.of(lucy, david));
+
             Student lune = new Student("Lune", "lune@gmail.com");
             Student solei = new Student("Solei", "solei@gmail.com");
             studentRepository.saveAll(List.of(lune, solei));

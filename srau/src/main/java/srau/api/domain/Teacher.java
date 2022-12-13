@@ -1,6 +1,7 @@
 package srau.api.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table
+@NoArgsConstructor
 public class Teacher {
     @Id
     @GeneratedValue
@@ -21,9 +23,6 @@ public class Teacher {
     private String email;
     @OneToMany
     private Set<Course> courses;
-
-    public Teacher() {
-    }
 
     public Teacher(String name, String email) {
         this.name = name;

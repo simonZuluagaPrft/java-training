@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
@@ -12,6 +13,7 @@ import lombok.ToString;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "course_id"})})
 @EqualsAndHashCode(exclude = {"student", "course"})
 @ToString(exclude = {"student", "course"})
+@NoArgsConstructor
 public class Grade {
     @Id
     @GeneratedValue
@@ -23,9 +25,6 @@ public class Grade {
     @NotNull(message = "Course needs a course")
     @ManyToOne
     private Course course;
-
-    public Grade() {
-    }
 
     public Grade(int score, Student student, Course course) {
         this.score = score;

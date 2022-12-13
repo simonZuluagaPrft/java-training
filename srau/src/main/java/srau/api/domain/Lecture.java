@@ -1,6 +1,7 @@
 package srau.api.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -11,6 +12,7 @@ import java.time.DayOfWeek;
 @Data
 @Entity
 @Table
+@NoArgsConstructor
 public class Lecture {
     @Id
     @GeneratedValue
@@ -28,9 +30,6 @@ public class Lecture {
     @NotNull(message = "Lecture needs a course")
     @ManyToOne
     private Course course;
-
-    public Lecture() {
-    }
 
     public Lecture(DayOfWeek dayOfWeek, Integer startHour, Integer finishHour, Course course) {
         this.dayOfWeek = dayOfWeek;

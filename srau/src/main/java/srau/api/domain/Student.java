@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
@@ -20,6 +21,7 @@ import lombok.ToString;
 @ToString(exclude = "courses")
 @Entity
 @Table
+@NoArgsConstructor
 public class Student {
     @Id
     @GeneratedValue
@@ -33,9 +35,6 @@ public class Student {
     private Set<Grade> grades;
     @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
-
-    public Student() {
-    }
 
     public Student(String name, String email) {
         this.name = name;

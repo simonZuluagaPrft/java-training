@@ -20,6 +20,7 @@ import lombok.*;
 @ToString(exclude = {"students", "lectures", "grades"})
 @Entity
 @Table
+@NoArgsConstructor
 public class Course {
     @Id
     @GeneratedValue
@@ -47,9 +48,6 @@ public class Course {
             )
     )
     private Set<Student> students;
-
-    public Course() {
-    }
 
     public Course(Subject subject, Teacher teacher) {
         this.subject = subject;

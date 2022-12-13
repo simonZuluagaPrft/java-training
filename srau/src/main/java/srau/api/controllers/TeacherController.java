@@ -29,36 +29,21 @@ public class TeacherController {
         return new ResponseEntity<>(teacherService.getTeachers(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "{teacherEmail}")
-    public ResponseEntity<TeacherGetDto> getTeacherByEmail(
-            @PathVariable("teacherEmail") String teacherEmail) throws ElementNotFoundException {
-        return new ResponseEntity<>(teacherService.getTeacherByEmail(teacherEmail), HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<HttpStatus> createTeacher(
             @RequestBody @Valid TeacherPostDto teacherPostDto)
-            throws ElementTakenException {
+            throws ElementTakenException, ElementNotFoundException {
         teacherService.createTeacher(teacherPostDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "{teacherId}")
-    public ResponseEntity<TeacherGetDto> updateTeacher(
-            @PathVariable("teacherId") Long teacherId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email)
-            throws ElementNotFoundException, ElementTakenException {
-        return new ResponseEntity<>(teacherService.updateTeacher(teacherId, name, email), HttpStatus.OK);
-    }
-
     @DeleteMapping(path = "{teacherId}")
-    public ResponseEntity deleteTeacher(@PathVariable("teacherId") Long teacherId)
+    public ResponseEntity<HttpStatus> deleteTeacher(@PathVariable("teacherId") Long teacherId)
             throws ElementNotFoundException {
         teacherService.deleteTeacher(teacherId);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "{teacherId}/grade")

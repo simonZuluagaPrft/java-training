@@ -27,28 +27,12 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getStudents(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "{studentEmail}")
-    public ResponseEntity<StudentGetDto> getStudentByEmail(
-            @PathVariable("studentEmail") String studentEmail) throws ElementNotFoundException {
-        return new ResponseEntity<>(studentService.getStudentByEmail(studentEmail), HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<HttpStatus> createStudent(
             @RequestBody @Valid StudentPostDto studentPostDto)
-            throws ElementTakenException {
+            throws ElementTakenException, ElementNotFoundException {
         studentService.createStudent(studentPostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PutMapping(path = "{studentId}")
-    public ResponseEntity<StudentGetDto> updateStudent(
-            @PathVariable("studentId") Long studentId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email)
-            throws ElementNotFoundException, ElementTakenException {
-        StudentGetDto studentGetDto = studentService.updateStudent(studentId, name, email);
-        return new ResponseEntity<>(studentGetDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{studentId}")

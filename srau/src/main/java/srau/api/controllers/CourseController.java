@@ -45,8 +45,8 @@ public class CourseController {
     @PutMapping(path = "{courseId}")
     public ResponseEntity<CourseGetDto> changeCourseTeacher(
             @PathVariable("courseId") Long courseId,
-            @RequestParam(required = true) String teacherEmail) throws ElementNotFoundException {
-        CourseGetDto course = courseService.changeCourseTeacher(courseId, teacherEmail);
+            @RequestParam(required = true) Long teacherId) throws ElementNotFoundException {
+        CourseGetDto course = courseService.changeCourseTeacher(courseId, teacherId);
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 

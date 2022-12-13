@@ -10,6 +10,5 @@ import lombok.Setter;
 public class StudentGetDto {
     @Id
     private Long id;
-    private String name;
-    private String email;
+    private AppUserGetDto appUser;
 }

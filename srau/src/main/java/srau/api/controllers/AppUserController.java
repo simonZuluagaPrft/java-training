@@ -24,12 +24,6 @@ public class AppUserController {
     }
 
     // -- App User
-    // + get all users
-    // + get user by username
-    // + get user by email
-    // + create user
-    // + update user
-    // + delete user
     // * Review cascade
     //
     // -- Student & Teacher

@@ -3,7 +3,7 @@ package srau.api.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import srau.api.domain.AppUser;
 import srau.api.domain.Grade;
 import srau.api.domain.Lecture;
 import srau.api.domain.Student;
@@ -13,18 +13,18 @@ import srau.api.mapstruct.dto.*;
 import srau.api.mapstruct.mapper.CourseMapper;
 import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.mapstruct.mapper.SubjectMapper;
+import srau.api.repositories.AppUserRepository;
 import srau.api.repositories.GradeRepository;
 import srau.api.repositories.StudentRepository;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+    private final AppUserRepository appUserRepository;
     private final GradeRepository gradeRepository;
     private final StudentRepository studentRepository;
     private final CourseMapper courseMapper;
@@ -33,11 +33,13 @@ public class StudentService {
 
     @Autowired
     public StudentService(
+            AppUserRepository appUserRepository,
             GradeRepository gradeRepository,
             StudentRepository studentRepository,
             CourseMapper courseMapper,
             StudentMapper studentMapper,
             SubjectMapper subjectMapper) {
+        this.appUserRepository = appUserRepository;
         this.gradeRepository = gradeRepository;
         this.studentRepository = studentRepository;
         this.courseMapper = courseMapper;
@@ -52,54 +54,14 @@ public class StudentService {
                 .map(studentMapper::studentToStudentGetDto)
                 .collect(Collectors.toList());
     }
-
-    public StudentGetDto getStudentByEmail(String studentEmail) throws ElementNotFoundException {
-        Student student = studentRepository.findStudentByEmail(studentEmail)
+    public void createStudent(StudentPostDto studentPostDto)
+            throws ElementTakenException, ElementNotFoundException {
+        // Verify not previous existance of userStudent
+        AppUser appUser = appUserRepository.findByUsername(studentPostDto.getUsername())
                 .orElseThrow(() -> new ElementNotFoundException(
-                        "No student with email: " + studentEmail));
+                        "No user with username: " + studentPostDto.getUsername()));
 
-        return studentMapper.studentToStudentGetDto(student);
-    }
-
-    public void createStudent(StudentPostDto studentPostDto) throws ElementTakenException {
-        Optional<Student> studentOptional = studentRepository
-                .findStudentByEmail(studentPostDto.getEmail());
-
-        if (studentOptional.isPresent()) {
-            throw new ElementTakenException("Email taken");
-        }
-
-        studentRepository.save(studentMapper.studentPostDtoToStudent(studentPostDto));
-    }
-
-    @Transactional
-    public StudentGetDto updateStudent(Long studentId, String name, String email)
-            throws ElementNotFoundException, ElementTakenException {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ElementNotFoundException(
-                        "No student with id: " + studentId));
-
-        if (name != null &&
-                name.length() > 0 &&
-                !Objects.equals(student.getName(), name)) {
-            student.setName(name);
-        }
-
-        if (email != null &&
-                email.length() > 0 &&
-                !Objects.equals(student.getEmail(), email)) {
-
-            Optional<Student> studentOptional = studentRepository
-                    .findStudentByEmail(email);
-
-            if (studentOptional.isPresent()) {
-                throw new ElementTakenException("email taken");
-            }
-
-            student.setEmail(email);
-        }
-
-        return studentMapper.studentToStudentGetDto(student);
+        studentRepository.save(new Student(appUser));
     }
 
     public void deleteStudent(Long studentId) throws ElementNotFoundException {
@@ -181,7 +143,7 @@ public class StudentService {
                 .stream()
                 .map(g -> new Report(
                         g.getCourse().getSubject().getName(),
-                        g.getCourse().getTeacher().getName(),
+                        g.getCourse().getTeacher().getAppUser().getUsername(),
                         g.getScore()))
                 .collect(Collectors.toList());
     }

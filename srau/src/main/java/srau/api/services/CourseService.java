@@ -76,15 +76,15 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseGetDto changeCourseTeacher(Long courseId, String teacherEmail)
+    public CourseGetDto changeCourseTeacher(Long courseId, Long teacherId)
             throws ElementNotFoundException {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No course with id: " + courseId));
 
-        Teacher teacher = teacherRepository.findTeacherByEmail(teacherEmail)
+        Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new ElementNotFoundException(
-                        "No teacher with email: " + teacherEmail));
+                        "No teacher with email: " + teacherId));
 
         course.setTeacher(teacher);
         return courseMapper.courseToCourseGetDto(course);

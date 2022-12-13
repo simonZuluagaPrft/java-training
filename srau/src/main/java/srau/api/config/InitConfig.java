@@ -23,23 +23,25 @@ public class InitConfig {
         return args -> {
             AppUser lucy = new AppUser("lucy", "lucy@gmail.com", "netrunner");
             AppUser david = new AppUser("david", "david@gmail.com", "cyberpunk");
-            appUserRepository.saveAll(List.of(lucy, david));
+            AppUser venus = new AppUser("venus", "venus@gmail.com", "t1");
+            AppUser jupyter = new AppUser("jupyter", "jupyter@gmail.com", "t2");
+            appUserRepository.saveAll(List.of(lucy, david, venus, jupyter));
 
-            Student lune = new Student("Lune", "lune@gmail.com");
-            Student solei = new Student("Solei", "solei@gmail.com");
-            studentRepository.saveAll(List.of(lune, solei));
+            Student lucyStudent = new Student(lucy);
+            Student davidStudent = new Student(david);
+            studentRepository.saveAll(List.of(lucyStudent, davidStudent));
+
+            Teacher venusTeacher = new Teacher(venus);
+            Teacher jupyterTeacher = new Teacher(jupyter);
+            teacherRepository.saveAll(List.of(venusTeacher, jupyterTeacher));
 
             Subject math = new Subject("Math", "some numbers");
             Subject physics = new Subject("Physics", "some physics");
             subjectRepository.saveAll(List.of(math, physics));
 
-            Teacher venus = new Teacher("Venus", "venus@gmail.com");
-            Teacher jupyter = new Teacher("Jupyter", "jupyter@gmail.com");
-            teacherRepository.saveAll(List.of(venus, jupyter));
-
-            Course mathVenus = new Course(math, venus);
-            Course physicsJupyter = new Course(physics, jupyter);
-            Course physicsVenus = new Course(physics, venus);
+            Course mathVenus = new Course(math, venusTeacher);
+            Course physicsJupyter = new Course(physics, jupyterTeacher);
+            Course physicsVenus = new Course(physics, venusTeacher);
             courseRepository.saveAll(List.of(mathVenus, physicsJupyter, physicsVenus));
 
             Lecture a1MathVenus = new Lecture(DayOfWeek.of(1), 7, 9, mathVenus);
@@ -47,10 +49,10 @@ public class InitConfig {
             Lecture a1physicsJupyter = new Lecture(DayOfWeek.of(5), 14, 17, physicsJupyter);
             lectureRepository.saveAll(List.of(a1MathVenus, a2MathVenus, a1physicsJupyter));
 
-            Grade luneMathVenus = new Grade(5, lune, mathVenus);
-            Grade lunePhysicsJupyter = new Grade(2, lune, physicsJupyter);
-            Grade soleiMathVenus = new Grade(4, solei, mathVenus);
-            Grade soleiPhysicsJupyter = new Grade(5, solei, physicsJupyter);
+            Grade luneMathVenus = new Grade(5, lucyStudent, mathVenus);
+            Grade lunePhysicsJupyter = new Grade(2, lucyStudent, physicsJupyter);
+            Grade soleiMathVenus = new Grade(4, davidStudent, mathVenus);
+            Grade soleiPhysicsJupyter = new Grade(5, davidStudent, physicsJupyter);
             gradeRepository.saveAll(List.of(
                     luneMathVenus, lunePhysicsJupyter, soleiMathVenus, soleiPhysicsJupyter));
 

@@ -20,6 +20,7 @@ import srau.api.repositories.StudentRepository;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,10 +57,15 @@ public class StudentService {
     }
     public void createStudent(StudentPostDto studentPostDto)
             throws ElementTakenException, ElementNotFoundException {
-        // Verify not previous existance of userStudent
         AppUser appUser = appUserRepository.findByUsername(studentPostDto.getUsername())
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No user with username: " + studentPostDto.getUsername()));
+
+        Optional<Student> optionalStudent = studentRepository.findByAppUser(appUser);
+
+        if (optionalStudent.isPresent()) {
+            throw new ElementTakenException("There is already a student bounded to this user");
+        }
 
         studentRepository.save(new Student(appUser));
     }

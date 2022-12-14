@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import srau.api.exception.BussinesLogicException;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.CourseGetDto;
 import srau.api.mapstruct.dto.CoursePostDto;
@@ -78,7 +79,8 @@ public class CourseController {
     @PostMapping(path = "{courseId}/student")
     public ResponseEntity<HttpStatus> enrollStudent(
             @PathVariable("courseId") Long courseId,
-            @RequestBody StudentIdDto studentIdDto) throws ElementNotFoundException {
+            @RequestBody StudentIdDto studentIdDto)
+            throws ElementNotFoundException, BussinesLogicException {
         courseService.enrollStudent(courseId, studentIdDto.getStudentId());
         System.out.println(HttpStatus.CREATED.getClass());
         return new ResponseEntity<>(HttpStatus.CREATED);

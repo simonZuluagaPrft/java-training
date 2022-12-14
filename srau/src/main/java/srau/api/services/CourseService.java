@@ -6,6 +6,7 @@ import srau.api.domain.Course;
 import srau.api.domain.Student;
 import srau.api.domain.Subject;
 import srau.api.domain.Teacher;
+import srau.api.exception.BussinesLogicException;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.CourseGetDto;
 import srau.api.mapstruct.dto.CoursePostDto;
@@ -99,7 +100,8 @@ public class CourseService {
         courseRepository.deleteById(courseId);
     }
 
-    public void enrollStudent(Long courseId, Long studentId) throws ElementNotFoundException {
+    public void enrollStudent(Long courseId, Long studentId)
+            throws ElementNotFoundException, BussinesLogicException {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No course with id: " + courseId));
@@ -107,6 +109,15 @@ public class CourseService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No student with id: " + studentId));
+
+        if (course
+                .getTeacher()
+                .getAppUser()
+                .getUsername()
+                .equals(student.getAppUser().getUsername())) {
+            throw new BussinesLogicException(
+                    "A student cannot be enrolled in a course in which he himself is the teacher");
+        }
 
         course.addStudent(student);
         courseRepository.save(course);

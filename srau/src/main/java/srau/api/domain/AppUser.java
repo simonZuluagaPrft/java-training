@@ -16,9 +16,11 @@ public class AppUser {
     @GeneratedValue
     private Long Id;
     @NotBlank(message = "AppUser should have a username")
+    @Column(unique = true)
     private String username;
     @NotBlank(message = "AppUser should have a name")
     @Email(message = "AppUser invalid email")
+    @Column(unique = true)
     private String email;
     @NotBlank(message = "AppUser should have a password")
     private String password;

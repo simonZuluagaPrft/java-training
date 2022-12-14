@@ -57,10 +57,15 @@ public class TeacherService {
 
     public void createTeacher(TeacherPostDto teacherPostDto)
             throws ElementTakenException, ElementNotFoundException {
-        // Verify not previous existance of userTeacher
         AppUser appUser = appUserRepository.findByUsername(teacherPostDto.getUsername())
                         .orElseThrow(() -> new ElementNotFoundException(
                                 "No user with username: " + teacherPostDto.getUsername()));
+
+        Optional<Teacher> optionalTeacher = teacherRepository.findByAppUser(appUser);
+
+        if (optionalTeacher.isPresent()) {
+            throw new ElementTakenException("There is already a teacher bounded to this user");
+        }
 
         teacherRepository.save(new Teacher(appUser));
     }

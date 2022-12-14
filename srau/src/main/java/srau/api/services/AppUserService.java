@@ -44,11 +44,18 @@ public class AppUserService {
     }
 
     public void createAppUser(AppUserPostDto appUserPostDto) throws ElementTakenException {
-        Optional<AppUser> appUserOptional = appUserRepository
+        Optional<AppUser> appUserByUsername = appUserRepository
                 .findByUsername(appUserPostDto.getUsername());
 
-        if (appUserOptional.isPresent()) {
+        if (appUserByUsername.isPresent()) {
             throw new ElementTakenException("Username taken");
+        }
+
+        Optional<AppUser> appUserByEmail = appUserRepository
+                .findByEmail(appUserPostDto.getEmail());
+
+        if (appUserByEmail.isPresent()) {
+            throw new ElementTakenException("Email already in use");
         }
 
         appUserRepository.save(appUserMapper.appUserPostDtoToAppUser(appUserPostDto));

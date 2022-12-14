@@ -21,16 +21,17 @@
         </org.projectlombok.ombok-mapstruct-binding.version>
         <org.mapstruct.mapstruct-processor.version>1.5.3.Final
         </org.mapstruct.mapstruct-processor.version>
+        <io.jsonwebtoken.jjwt-extensions>0.9.1</io.jsonwebtoken.jjwt-extensions>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -54,6 +55,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.mapstruct-processor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${io.jsonwebtoken.jjwt-extensions}</version>
         </dependency>
 
         <dependency>

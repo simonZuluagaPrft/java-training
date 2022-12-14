@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,8 +25,19 @@ public class AppUser {
     private String email;
     @NotBlank(message = "AppUser should have a password")
     private String password;
-//    @ManyToMany
-//    private Set<Role> roles;
+    @ManyToMany
+    @JoinTable(
+            name = "app_user_role",
+            joinColumns = @JoinColumn(
+                    name = "app_user_id",
+                    referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id",
+                    referencedColumnName = "id"
+            )
+    )
+    private Set<Role> roles;
 
     public AppUser(String username, String email, String password) {
         this.username = username;

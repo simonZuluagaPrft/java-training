@@ -41,11 +41,11 @@ public class Course {
         joinColumns = @JoinColumn(
             name = "course_id",
             referencedColumnName = "id"
-            ),
+        ),
         inverseJoinColumns = @JoinColumn(
             name = "student_id",
             referencedColumnName = "id"
-            )
+        )
     )
     private Set<Student> students;
 

@@ -2,6 +2,8 @@ package srau.api.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.jackson2.SimpleGrantedAuthorityMixin;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

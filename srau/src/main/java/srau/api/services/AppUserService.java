@@ -1,6 +1,9 @@
 package srau.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import srau.api.domain.AppUser;
 import srau.api.exception.ElementNotFoundException;
@@ -17,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AppUserService {
+public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final AppUserMapper appUserMapper;
 
@@ -99,5 +102,12 @@ public class AppUserService {
         }
 
         appUserRepository.deleteById(userId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "No user with  username: " + username));
     }
 }

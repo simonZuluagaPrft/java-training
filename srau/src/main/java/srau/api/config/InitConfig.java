@@ -4,7 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import srau.api.domain.*;
+import srau.api.mapstruct.dto.AppUserPostDto;
 import srau.api.repositories.*;
+import srau.api.services.AppUserService;
 
 import java.time.DayOfWeek;
 import java.util.List;
@@ -19,8 +21,13 @@ public class InitConfig {
             TeacherRepository teacherRepository,
             CourseRepository courseRepository,
             LectureRepository lectureRepository,
-            GradeRepository gradeRepository) {
+            GradeRepository gradeRepository,
+            RoleRepository roleRepository) {
         return args -> {
+//            Role user = new Role("user");
+//            Role admin = new Role("admin");
+//            roleRepository.saveAll(List.of(user, admin));
+
             AppUser lucy = new AppUser("lucy", "lucy@gmail.com", "netrunner");
             AppUser david = new AppUser("david", "david@gmail.com", "cyberpunk");
             AppUser venus = new AppUser("venus", "venus@gmail.com", "t1");
@@ -55,7 +62,6 @@ public class InitConfig {
             Grade soleiPhysicsJupyter = new Grade(5, davidStudent, physicsJupyter);
             gradeRepository.saveAll(List.of(
                     luneMathVenus, lunePhysicsJupyter, soleiMathVenus, soleiPhysicsJupyter));
-
         };
     }
 }

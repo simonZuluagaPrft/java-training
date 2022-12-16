@@ -3,11 +3,16 @@ package srau.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import srau.api.config.JwtUtil;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.AppUserGetDto;
 import srau.api.mapstruct.dto.AppUserPostDto;
+import srau.api.mapstruct.dto.AuthenticationRequest;
 import srau.api.services.AppUserService;
 
 import javax.validation.Valid;
@@ -17,21 +22,17 @@ import java.util.List;
 @RequestMapping("api/v1/user")
 public class AppUserController {
     private final AppUserService appUserService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public AppUserController(AppUserService appUserService) {
+    public AppUserController(AppUserService appUserService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.appUserService = appUserService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
-    // -- App User
-    // * Review cascade
-    //
-    // -- Student & Teacher
-    // * Change domain
-    // * Change Dtos
-    // * Change creation
-    // * Review update
-    // * Review cascade
+    // TODO: REVIEW CASCADE
 
     @GetMapping
     public ResponseEntity<List<AppUserGetDto>> getAppUsers() {
@@ -43,13 +44,6 @@ public class AppUserController {
             @PathVariable("username") String username) throws ElementNotFoundException {
         return new ResponseEntity<>(
                 appUserService.getAppUserByUsername(username), HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<HttpStatus> createAppUser(
-            @RequestBody @Valid AppUserPostDto appUserPostDto) throws ElementTakenException {
-        appUserService.createAppUser(appUserPostDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{username}")
@@ -67,5 +61,25 @@ public class AppUserController {
             throws ElementNotFoundException {
         appUserService.deleteAppUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(path = "signin")
+    public ResponseEntity<HttpStatus> createAppUser(
+            @RequestBody @Valid AppUserPostDto appUserPostDto)
+            throws ElementTakenException, ElementNotFoundException {
+        appUserService.createAppUser(appUserPostDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "login")
+    public ResponseEntity<String> login(@RequestBody AuthenticationRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()));
+        final UserDetails userDetails = appUserService.loadUserByUsername(request.getUsername());
+        if (userDetails != null) {
+            return new ResponseEntity<>(jwtUtil.generateToken(userDetails), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }

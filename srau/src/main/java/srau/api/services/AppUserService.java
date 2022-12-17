@@ -6,12 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import srau.api.domain.AppUser;
+import srau.api.domain.Role;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.AppUserGetDto;
 import srau.api.mapstruct.dto.AppUserPostDto;
 import srau.api.mapstruct.mapper.AppUserMapper;
 import srau.api.repositories.AppUserRepository;
+import srau.api.repositories.RoleRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,11 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
+    private final RoleRepository roleRepository;
     private final AppUserMapper appUserMapper;
 
     @Autowired
-    public AppUserService(AppUserRepository appUserRepository, AppUserMapper appUserMapper) {
+    public AppUserService(AppUserRepository appUserRepository, RoleRepository roleRepository, AppUserMapper appUserMapper) {
         this.appUserRepository = appUserRepository;
+        this.roleRepository = roleRepository;
         this.appUserMapper = appUserMapper;
     }
 
@@ -46,7 +50,12 @@ public class AppUserService implements UserDetailsService {
         return appUserMapper.appUserToAppUserGetDto(appUser);
     }
 
-    public void createAppUser(AppUserPostDto appUserPostDto) throws ElementTakenException {
+    public AppUser createAppUser(AppUserPostDto appUserPostDto)
+            throws ElementTakenException, ElementNotFoundException {
+        String BASE_ROLE_ROLENAME = "user";
+        Role baseRole = roleRepository.findByRoleName(BASE_ROLE_ROLENAME)
+                .orElseThrow(() -> new ElementNotFoundException("Could not find base role"));
+
         Optional<AppUser> appUserByUsername = appUserRepository
                 .findByUsername(appUserPostDto.getUsername());
 
@@ -61,7 +70,9 @@ public class AppUserService implements UserDetailsService {
             throw new ElementTakenException("Email already in use");
         }
 
-        appUserRepository.save(appUserMapper.appUserPostDtoToAppUser(appUserPostDto));
+        AppUser appUser = appUserMapper.appUserPostDtoToAppUser(appUserPostDto);
+        appUser.addRole(baseRole);
+        return appUserRepository.save(appUser);
     }
 
     @Transactional

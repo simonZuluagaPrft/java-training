@@ -42,7 +42,7 @@ public class LectureService {
                 .collect(Collectors.toList());
     }
 
-    public void createLecture(LecturePostDto lecturePostDto) {
+    public Lecture createLecture(LecturePostDto lecturePostDto) {
         Course course = courseRepository.findById(lecturePostDto.getCourseId())
                 .orElseThrow(() -> new IllegalStateException(
                         "Course with id " + lecturePostDto.getCourseId() + "does not exists"));
@@ -51,7 +51,7 @@ public class LectureService {
                 lecturePostDto.getStartHour(),
                 lecturePostDto.getFinishHour(),
                 course);
-        lectureRepository.save(lecture);
+        return lectureRepository.save(lecture);
     }
 
     @Transactional

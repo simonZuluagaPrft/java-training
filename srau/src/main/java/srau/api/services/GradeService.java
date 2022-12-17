@@ -43,7 +43,7 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
-    public void createGrade(GradePostDto gradePostDto) {
+    public Grade createGrade(GradePostDto gradePostDto) {
         Student student = studentRepository
                 .findById(gradePostDto.getStudentId())
                 .orElseThrow(() -> new IllegalStateException(
@@ -56,7 +56,7 @@ public class GradeService {
 
         Grade grade = new Grade(gradePostDto.getScore(), student, course);
 
-        gradeRepository.save(grade);
+        return gradeRepository.save(grade);
     }
 
     public void deleteGrade(Long gradeId) {

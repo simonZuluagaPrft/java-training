@@ -22,7 +22,7 @@ public class Role {
     @NotBlank(message = "Role needs a name to be identified with")
     @Size(max = 20)
     private String roleName;
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private Set<AppUser> appUsers = new HashSet<>();
 
     public Role(String roleName) {

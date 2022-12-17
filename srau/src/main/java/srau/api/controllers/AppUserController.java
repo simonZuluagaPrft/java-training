@@ -26,7 +26,10 @@ public class AppUserController {
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public AppUserController(AppUserService appUserService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AppUserController(
+            AppUserService appUserService,
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil) {
         this.appUserService = appUserService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -82,4 +85,16 @@ public class AppUserController {
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+//    @PostMapping(path = "login")
+//    public ResponseEntity<String> login(@RequestBody @Valid AuthenticationRequest request) {
+////        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+////                request.getUsername(),
+////                request.getPassword()));
+////        final UserDetails userDetails = appUserService.loadUserByUsername(request.getUsername());
+////        if (userDetails != null) {
+////            return new ResponseEntity<>(jwtUtil.generateToken(userDetails), HttpStatus.OK);
+////        }
+//        System.out.println("HEYYY: " + request.getUsername() + " " + request.getPassword());
+//        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//    }
 }

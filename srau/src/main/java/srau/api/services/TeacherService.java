@@ -55,7 +55,7 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
-    public void createTeacher(TeacherPostDto teacherPostDto)
+    public Teacher createTeacher(TeacherPostDto teacherPostDto)
             throws ElementTakenException, ElementNotFoundException {
         AppUser appUser = appUserRepository.findByUsername(teacherPostDto.getUsername())
                         .orElseThrow(() -> new ElementNotFoundException(
@@ -67,7 +67,7 @@ public class TeacherService {
             throw new ElementTakenException("There is already a teacher bounded to this user");
         }
 
-        teacherRepository.save(new Teacher(appUser));
+        return teacherRepository.save(new Teacher(appUser));
     }
 
     public void deleteTeacher(Long teacherId) throws ElementNotFoundException {

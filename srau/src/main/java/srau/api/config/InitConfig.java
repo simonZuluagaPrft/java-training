@@ -4,64 +4,60 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import srau.api.domain.*;
-import srau.api.repositories.*;
+import srau.api.mapstruct.dto.*;
+import srau.api.repositories.RoleRepository;
+import srau.api.services.*;
 
-import java.time.DayOfWeek;
 import java.util.List;
 
 @Configuration
 public class InitConfig {
     @Bean
     CommandLineRunner initCommandLineRunner(
-            AppUserRepository appUserRepository,
-            StudentRepository studentRepository,
-            SubjectRepository subjectRepository,
-            TeacherRepository teacherRepository,
-            CourseRepository courseRepository,
-            LectureRepository lectureRepository,
-            GradeRepository gradeRepository,
+            AppUserService appUserService,
+            StudentService studentService,
+            SubjectService subjectService,
+            TeacherService teacherService,
+            CourseService courseService,
+            LectureService lectureService,
+            GradeService gradeService,
             RoleRepository roleRepository) {
         return args -> {
             Role user = new Role("user");
             Role admin = new Role("admin");
             roleRepository.saveAll(List.of(user, admin));
 
-            AppUser lucy = new AppUser("lucy", "lucy@gmail.com", "netrunner");
-            AppUser david = new AppUser("david", "david@gmail.com", "cyberpunk");
-            AppUser venus = new AppUser("venus", "venus@gmail.com", "t1");
-            AppUser jupyter = new AppUser("jupyter", "jupyter@gmail.com", "t2");
+            AppUser lucy = appUserService.createAppUser(new AppUserPostDto("lucy", "lucy@gmail.com", "netrunner"));
+            AppUser david = appUserService.createAppUser(new AppUserPostDto("david", "david@gmail.com", "cyberpunk"));
+            AppUser venus = appUserService.createAppUser(new AppUserPostDto("venus", "venus@gmail.com", "t1"));
+            AppUser jupyter = appUserService.createAppUser(new AppUserPostDto("jupyter", "jupyter@gmail.com", "t2"));
 
-            david.addRole(user);
-            appUserRepository.saveAll(List.of(lucy, david, venus, jupyter));
+            Student lucyStudent = studentService.createStudent(new StudentPostDto("lucy"));
+            Student davidStudent = studentService.createStudent(new StudentPostDto("david"));
 
-            Student lucyStudent = new Student(lucy);
-            Student davidStudent = new Student(david);
-            studentRepository.saveAll(List.of(lucyStudent, davidStudent));
+            Teacher venusTeacher = teacherService.createTeacher(new TeacherPostDto("venus"));
+            Teacher jupyterTeacher = teacherService.createTeacher(new TeacherPostDto("jupyter"));
 
-            Teacher venusTeacher = new Teacher(venus);
-            Teacher jupyterTeacher = new Teacher(jupyter);
-            teacherRepository.saveAll(List.of(venusTeacher, jupyterTeacher));
+            Subject math = subjectService.createSubject(new SubjectPostDto("Math", "some numbers"));
+            Subject physics = subjectService.createSubject(new SubjectPostDto("Physics", "some physics"));
 
-            Subject math = new Subject("Math", "some numbers");
-            Subject physics = new Subject("Physics", "some physics");
-            subjectRepository.saveAll(List.of(math, physics));
+            Course mathVenus = courseService.createCourse(new CoursePostDto(math.getId(), venusTeacher.getId()));
+            Course physicsJupyter = courseService.createCourse(new CoursePostDto(physics.getId(), jupyterTeacher.getId()));
+            Course physicsVenus = courseService.createCourse(new CoursePostDto(physics.getId(), venusTeacher.getId()));
 
-            Course mathVenus = new Course(math, venusTeacher);
-            Course physicsJupyter = new Course(physics, jupyterTeacher);
-            Course physicsVenus = new Course(physics, venusTeacher);
-            courseRepository.saveAll(List.of(mathVenus, physicsJupyter, physicsVenus));
+            Lecture a1MathVenus = lectureService.createLecture(new LecturePostDto(mathVenus.getId(), 1, 7, 9));
+            Lecture a2MathVenus = lectureService.createLecture(new LecturePostDto(mathVenus.getId(), 3, 9, 11));
+            Lecture a1physicsJupyter = lectureService.createLecture(new LecturePostDto(physicsJupyter.getId(), 5, 14, 17));
 
-            Lecture a1MathVenus = new Lecture(DayOfWeek.of(1), 7, 9, mathVenus);
-            Lecture a2MathVenus = new Lecture(DayOfWeek.of(3), 9, 11, mathVenus);
-            Lecture a1physicsJupyter = new Lecture(DayOfWeek.of(5), 14, 17, physicsJupyter);
-            lectureRepository.saveAll(List.of(a1MathVenus, a2MathVenus, a1physicsJupyter));
+            Grade luneMathVenus = gradeService.createGrade(new GradePostDto(5, lucyStudent.getId(), mathVenus.getId()));
+            Grade lunePhysicsJupyter = gradeService.createGrade(new GradePostDto(2, lucyStudent.getId(), physicsJupyter.getId()));
+            Grade soleiMathVenus = gradeService.createGrade(new GradePostDto(4, davidStudent.getId(), mathVenus.getId()));
+            Grade soleiPhysicsJupyter = gradeService.createGrade(new GradePostDto(5, davidStudent.getId(), physicsJupyter.getId()));
 
-            Grade luneMathVenus = new Grade(5, lucyStudent, mathVenus);
-            Grade lunePhysicsJupyter = new Grade(2, lucyStudent, physicsJupyter);
-            Grade soleiMathVenus = new Grade(4, davidStudent, mathVenus);
-            Grade soleiPhysicsJupyter = new Grade(5, davidStudent, physicsJupyter);
-            gradeRepository.saveAll(List.of(
-                    luneMathVenus, lunePhysicsJupyter, soleiMathVenus, soleiPhysicsJupyter));
+//            courseService.enrollStudent(physicsJupyter.getId(), davidStudent.getId());
+//            courseService.enrollStudent(mathVenus.getId(), davidStudent.getId());
+//            courseService.enrollStudent(physicsJupyter.getId(), lucyStudent.getId());
+//            courseService.enrollStudent(mathVenus.getId(), lucyStudent.getId());
         };
     }
 }

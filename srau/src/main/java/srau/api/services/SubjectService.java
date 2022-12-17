@@ -43,7 +43,7 @@ public class SubjectService {
         return subjectMapper.subjectToSubjectGetDto(subject);
     }
 
-    public void createSubject(SubjectPostDto subjectPostDto) throws ElementTakenException {
+    public Subject createSubject(SubjectPostDto subjectPostDto) throws ElementTakenException {
         Optional<Subject> subjectOptional = subjectRepository
                 .findSubjectByName(subjectPostDto.getName());
 
@@ -51,7 +51,7 @@ public class SubjectService {
             throw new ElementTakenException("Name taken");
         }
 
-        subjectRepository.save(subjectMapper.subjectPostDtoToSubject(subjectPostDto));
+        return subjectRepository.save(subjectMapper.subjectPostDtoToSubject(subjectPostDto));
     }
 
     @Transactional

@@ -55,7 +55,7 @@ public class StudentService {
                 .map(studentMapper::studentToStudentGetDto)
                 .collect(Collectors.toList());
     }
-    public void createStudent(StudentPostDto studentPostDto)
+    public Student createStudent(StudentPostDto studentPostDto)
             throws ElementTakenException, ElementNotFoundException {
         AppUser appUser = appUserRepository.findByUsername(studentPostDto.getUsername())
                 .orElseThrow(() -> new ElementNotFoundException(
@@ -67,7 +67,7 @@ public class StudentService {
             throw new ElementTakenException("There is already a student bounded to this user");
         }
 
-        studentRepository.save(new Student(appUser));
+        return studentRepository.save(new Student(appUser));
     }
 
     public void deleteStudent(Long studentId) throws ElementNotFoundException {

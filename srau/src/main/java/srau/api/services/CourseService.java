@@ -63,7 +63,7 @@ public class CourseService {
         return courseMapper.courseToCourseGetDto(course);
     }
 
-    public void createCourse(CoursePostDto coursePostDto) throws ElementNotFoundException {
+    public Course createCourse(CoursePostDto coursePostDto) throws ElementNotFoundException {
         Subject subject = subjectRepository.findById(coursePostDto.getSubjectId())
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No subject with id: " + coursePostDto.getSubjectId()));
@@ -73,7 +73,7 @@ public class CourseService {
                         "No teacher with id: " + coursePostDto.getTeacherId()));
 
         Course course = new Course(subject, teacher);
-        courseRepository.save(course);
+        return courseRepository.save(course);
     }
 
     @Transactional

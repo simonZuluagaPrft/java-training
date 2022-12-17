@@ -1,6 +1,7 @@
 package srau.api.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table
+@EqualsAndHashCode(exclude = "roles")
 @NoArgsConstructor
 public class AppUser implements UserDetails {
     @Id
@@ -29,7 +32,7 @@ public class AppUser implements UserDetails {
     private String email;
     @NotBlank(message = "AppUser should have a password")
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "app_user_role",
             joinColumns = @JoinColumn(
@@ -41,7 +44,7 @@ public class AppUser implements UserDetails {
                     referencedColumnName = "id"
             )
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public AppUser(String username, String email, String password) {
         this.username = username;
@@ -56,11 +59,10 @@ public class AppUser implements UserDetails {
 
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {
-//        return getRoles()
-//                .stream()
-//                .map(r -> new SimpleGrantedAuthority(r.getRoleName()))
-//                .collect(Collectors.toList());
-        return List.of(new SimpleGrantedAuthority("user"));
+        return getRoles()
+                .stream()
+                .map(r -> new SimpleGrantedAuthority(r.getRoleName()))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,30 +1,29 @@
 package srau.api.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.jackson2.SimpleGrantedAuthorityMixin;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Entity
 @Table
+@EqualsAndHashCode(exclude = "appUsers")
 @NoArgsConstructor
 public class Role {
     @Id
+    @GeneratedValue
     private Long id;
     @NotBlank(message = "Role needs a name to be identified with")
     @Size(max = 20)
     private String roleName;
     @ManyToMany(mappedBy = "roles")
-    private Set<AppUser> appUsers;
+    private Set<AppUser> appUsers = new HashSet<>();
 
     public Role(String roleName) {
         this.roleName = roleName;

@@ -72,7 +72,7 @@ public class AppUserController {
     }
 
     @PostMapping(path = "login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<String> login(@RequestBody @Valid AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()));

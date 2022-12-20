@@ -1,9 +1,7 @@
 package srau.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import srau.api.domain.AppUser;
 import srau.api.domain.Role;
@@ -15,6 +13,7 @@ import srau.api.mapstruct.mapper.AppUserMapper;
 import srau.api.repositories.AppUserRepository;
 import srau.api.repositories.RoleRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
@@ -22,16 +21,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AppUserService implements UserDetailsService {
+public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final RoleRepository roleRepository;
     private final AppUserMapper appUserMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AppUserService(AppUserRepository appUserRepository, RoleRepository roleRepository, AppUserMapper appUserMapper) {
+    public AppUserService(
+            AppUserRepository appUserRepository,
+            RoleRepository roleRepository,
+            AppUserMapper appUserMapper,
+            BCryptPasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
         this.roleRepository = roleRepository;
         this.appUserMapper = appUserMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public AppUser readAppUserByUsername(String username) {
+        return appUserRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
     }
 
     public List<AppUserGetDto> getAppUsers() {
@@ -70,6 +79,7 @@ public class AppUserService implements UserDetailsService {
             throw new ElementTakenException("Email already in use");
         }
 
+        appUserPostDto.setPassword(passwordEncoder.encode(appUserPostDto.getPassword()));
         AppUser appUser = appUserMapper.appUserPostDtoToAppUser(appUserPostDto);
         appUser.addRole(baseRole);
         return appUserRepository.save(appUser);
@@ -113,12 +123,5 @@ public class AppUserService implements UserDetailsService {
         }
 
         appUserRepository.deleteById(userId);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "No user with  username: " + username));
     }
 }

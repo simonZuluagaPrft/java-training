@@ -3,23 +3,19 @@ package srau.api.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @Entity
 @Table
 @EqualsAndHashCode(exclude = "roles")
 @NoArgsConstructor
-public class AppUser implements UserDetails {
+public class AppUser {
     @Id
     @GeneratedValue
     private Long Id;
@@ -55,33 +51,5 @@ public class AppUser implements UserDetails {
     public void addRole(Role role) {
         this.roles.add(role);
         role.getAppUsers().add(this);
-    }
-
-    @Override
-    public List<SimpleGrantedAuthority> getAuthorities() {
-        return getRoles()
-                .stream()
-                .map(r -> new SimpleGrantedAuthority(r.getRoleName()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

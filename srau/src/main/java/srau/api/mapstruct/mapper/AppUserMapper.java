@@ -12,6 +12,6 @@ public interface AppUserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
+//    @Mapping(target = "authorities", ignore = true)
     AppUser appUserPostDtoToAppUser(AppUserPostDto appUserPostDto);
 }

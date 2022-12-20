@@ -21,7 +21,7 @@
         </org.projectlombok.ombok-mapstruct-binding.version>
         <org.mapstruct.mapstruct-processor.version>1.5.3.Final
         </org.mapstruct.mapstruct-processor.version>
-        <io.jsonwebtoken.jjwt-extensions>0.9.1</io.jsonwebtoken.jjwt-extensions>
+        <com.auth0.java-jwt.version>3.11.0</com.auth0.java-jwt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -57,9 +57,9 @@
             <version>${org.mapstruct.mapstruct-processor.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${io.jsonwebtoken.jjwt-extensions}</version>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${com.auth0.java-jwt.version}</version>
         </dependency>
 
         <dependency>

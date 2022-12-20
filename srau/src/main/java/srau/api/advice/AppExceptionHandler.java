@@ -21,21 +21,26 @@ public class AppExceptionHandler {
     public ResponseEntity<Map<String, String>> handleInvalidArgument(
             MethodArgumentNotValidException exception) {
         Map<String, String> errorMap = new HashMap<>();
-        exception.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMap.put(error.getField(), error.getDefaultMessage());
-        });
+        exception.getBindingResult().getFieldErrors().forEach(error ->
+                errorMap.put(error.getField(), error.getDefaultMessage()));
 
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ElementNotFoundException.class)
-    public ResponseEntity<String> handleElementNotFound(ElementNotFoundException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleElementNotFound(ElementNotFoundException exception) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", exception.getMessage());
+
+        return new ResponseEntity<>(errorMap, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ElementTakenException.class)
-    public ResponseEntity<String> handleElementTaken(ElementTakenException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleElementTaken(ElementTakenException exception) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", exception.getMessage());
+
+        return new ResponseEntity<>(errorMap, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BussinesLogicException.class)

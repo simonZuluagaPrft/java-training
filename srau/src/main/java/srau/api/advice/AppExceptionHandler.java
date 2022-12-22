@@ -44,7 +44,10 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler(BussinesLogicException.class)
-    public ResponseEntity<String> handleBussinesLogic(BussinesLogicException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Map<String, String>> handleBussinesLogic(
+            BussinesLogicException exception) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", exception.getMessage());
+        return new ResponseEntity<>(errorMap, HttpStatus.NOT_ACCEPTABLE);
     }
 }

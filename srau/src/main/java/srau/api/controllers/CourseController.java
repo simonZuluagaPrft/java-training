@@ -3,6 +3,7 @@ package srau.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import srau.api.exception.BussinesLogicException;
 import srau.api.exception.ElementNotFoundException;
@@ -25,17 +26,20 @@ public class CourseController {
         this.courseService = courseService;
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping
     public ResponseEntity<List<CourseGetDto>> getCourses() {
         return new ResponseEntity<>(courseService.getCourses(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping(path = "{courseId}")
     public ResponseEntity<CourseGetDto> getCourseById(@PathVariable("courseId") Long courseId)
             throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCourseById(courseId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<HttpStatus> createCourse(@RequestBody @Valid CoursePostDto coursePostDto)
             throws ElementNotFoundException {
@@ -43,6 +47,7 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(path = "{courseId}")
     public ResponseEntity<CourseGetDto> changeCourseTeacher(
             @PathVariable("courseId") Long courseId,
@@ -51,6 +56,7 @@ public class CourseController {
         return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{courseId}")
     public ResponseEntity<HttpStatus> deleteCourse(@PathVariable("courseId") Long courseId)
             throws ElementNotFoundException {
@@ -58,24 +64,28 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER')")
     @GetMapping(path = "{courseId}/student")
     public ResponseEntity<List<StudentGetDto>> getCourseStudents(
             @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCourseStudents(courseId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER')")
     @GetMapping(path = "{courseId}/passed")
     public ResponseEntity<List<StudentGetDto>> getCoursePassedStudents(
             @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCoursePassedStudents(courseId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER')")
     @GetMapping(path = "{courseId}/failed")
     public ResponseEntity<List<StudentGetDto>> getCourseFailedStudents(
             @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
         return new ResponseEntity<>(courseService.getCourseFailedStudents(courseId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(path = "{courseId}/student")
     public ResponseEntity<HttpStatus> enrollStudent(
             @PathVariable("courseId") Long courseId,
@@ -86,6 +96,7 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{courseId}/student/{studentId}")
     public ResponseEntity<HttpStatus> dropStudent(
             @PathVariable("courseId") Long courseId,

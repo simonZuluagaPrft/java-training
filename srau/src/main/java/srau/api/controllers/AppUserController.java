@@ -3,6 +3,7 @@ package srau.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
@@ -23,13 +24,12 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-    // TODO: REVIEW CASCADE
-
     @GetMapping
     public ResponseEntity<List<AppUserGetDto>> getAppUsers() {
         return new ResponseEntity<>(appUserService.getAppUsers(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping(path = "{username}")
     public ResponseEntity<AppUserGetDto> getAppUserByUsername(
             @PathVariable("username") String username) throws ElementNotFoundException {
@@ -37,6 +37,7 @@ public class AppUserController {
                 appUserService.getAppUserByUsername(username), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @PutMapping(path = "{username}")
     public ResponseEntity<AppUserGetDto> updateAppUser(
             @PathVariable("username") String username,
@@ -47,6 +48,7 @@ public class AppUserController {
         return new ResponseEntity<>(appUserGetDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{userId}")
     public ResponseEntity<HttpStatus> deleteAppUser(@PathVariable("userId") Long userId)
             throws ElementNotFoundException {

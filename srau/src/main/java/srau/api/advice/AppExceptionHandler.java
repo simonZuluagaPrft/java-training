@@ -16,7 +16,6 @@ import java.util.Map;
 public class AppExceptionHandler {
     //TODO:
     // - Handle bad method errors
-    // - No auth post request have problems
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleInvalidArgument(
             MethodArgumentNotValidException exception) {

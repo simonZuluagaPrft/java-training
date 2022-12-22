@@ -2,6 +2,7 @@ package srau.api.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import srau.api.exception.BussinesLogicException;
 import srau.api.exception.ElementNotFoundException;
@@ -24,11 +25,13 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping
     public ResponseEntity<List<TeacherGetDto>> getTeachers() {
         return new ResponseEntity<>(teacherService.getTeachers(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<HttpStatus> createTeacher(
             @RequestBody @Valid TeacherPostDto teacherPostDto)
@@ -38,6 +41,7 @@ public class TeacherController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{teacherId}")
     public ResponseEntity<HttpStatus> deleteTeacher(@PathVariable("teacherId") Long teacherId)
             throws ElementNotFoundException {
@@ -46,6 +50,7 @@ public class TeacherController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER')")
     @PostMapping(path = "{teacherId}/grade")
     public ResponseEntity<HttpStatus> gradeStudent(
             @PathVariable("teacherId") Long teacherId,
@@ -56,6 +61,7 @@ public class TeacherController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TEACHER')")
     @PutMapping(path = "{teacherId}/grade")
     public ResponseEntity<GradeGetDto> updateStudentGrade(
             @PathVariable("teacherId") Long teacherId,

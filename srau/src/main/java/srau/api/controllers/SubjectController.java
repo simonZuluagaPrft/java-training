@@ -3,6 +3,7 @@ package srau.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
@@ -34,6 +35,7 @@ public class SubjectController {
         return new ResponseEntity<>(subjectService.getSubjectByName(subjectName), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<HttpStatus> createSubject(
             @RequestBody @Valid SubjectPostDto subjectPostDto)
@@ -43,6 +45,7 @@ public class SubjectController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(path = "{subjectId}")
     public ResponseEntity<SubjectGetDto> updateSubject(
             @PathVariable("subjectId") Long subjectId,
@@ -54,6 +57,7 @@ public class SubjectController {
         return new ResponseEntity<>(subjectGetDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{subjectId}")
     public ResponseEntity<HttpStatus> deleteSubject(@PathVariable("subjectId") Long subjectId)
             throws ElementNotFoundException {

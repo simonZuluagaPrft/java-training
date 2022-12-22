@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,11 +32,13 @@ public class LectureController {
         this.lectureService = lectureService;
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping
     public ResponseEntity<List<LectureGetDto>> getLectures() {
         return new ResponseEntity<>(lectureService.getLectures(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<HttpStatus> createLecture(
             @RequestBody @Valid  LecturePostDto lecturePostDto) {
@@ -43,6 +46,7 @@ public class LectureController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping(path = "{lectureId}")
     public ResponseEntity<LectureGetDto> updateLecture(
             @PathVariable("lectureId") Long lectureId,
@@ -54,6 +58,7 @@ public class LectureController {
         return new ResponseEntity<>(lectureGetDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping(path = "{lectureId}")
     public ResponseEntity<HttpStatus> deleteLecture(@PathVariable("lectureId") Long lectureId) {
         lectureService.deleteLecture(lectureId);

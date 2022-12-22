@@ -23,14 +23,17 @@ public class InitConfig {
             GradeService gradeService,
             RoleRepository roleRepository) {
         return args -> {
-            Role user = new Role("user");
-            Role admin = new Role("admin");
-            roleRepository.saveAll(List.of(user, admin));
+            Role user = new Role("USER");
+            Role admin = new Role("ADMIN");
+            Role student = new Role("STUDENT");
+            Role teacher = new Role("TEACHER");
+            roleRepository.saveAll(List.of(user, admin, student, teacher));
 
             AppUser lucy = appUserService.createAppUser(new AppUserPostDto("lucy", "lucy@gmail.com", "netrunner"));
             AppUser david = appUserService.createAppUser(new AppUserPostDto("david", "david@gmail.com", "cyberpunk"));
             AppUser venus = appUserService.createAppUser(new AppUserPostDto("venus", "venus@gmail.com", "t1"));
             AppUser jupyter = appUserService.createAppUser(new AppUserPostDto("jupyter", "jupyter@gmail.com", "t2"));
+            appUserService.addRoleToAppUser(lucy.getId(), admin.getRoleName());
 
             Student lucyStudent = studentService.createStudent(new StudentPostDto("lucy"));
             Student davidStudent = studentService.createStudent(new StudentPostDto("david"));

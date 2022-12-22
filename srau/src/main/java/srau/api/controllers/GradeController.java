@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.services.GradeService;
@@ -21,9 +22,17 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<GradeGetDto>> getGrades() {
-        return new ResponseEntity<>(gradeService.getGrades(), HttpStatus.OK);
+//    TODO: test new get grades
+    @GetMapping(path = "student/{studentId}")
+    public ResponseEntity<List<GradeGetDto>> getStudentGrades(
+            @PathVariable("studentId") Long studentId) throws ElementNotFoundException {
+        return new ResponseEntity<>(gradeService.getStudentGrades(studentId), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "course/{courseId}")
+    public ResponseEntity<List<GradeGetDto>> getCourseGrades(
+            @PathVariable("courseId") Long courseId) throws ElementNotFoundException {
+        return new ResponseEntity<>(gradeService.getCourseGrades(courseId), HttpStatus.OK);
     }
 
     @PostMapping

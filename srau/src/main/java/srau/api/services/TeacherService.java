@@ -24,6 +24,7 @@ public class TeacherService {
     private final AppUserRepository appUserRepository;
     private final CourseRepository courseRepository;
     private final GradeRepository gradeRepository;
+    private final RoleRepository roleRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final TeacherMapper teacherMapper;
@@ -34,6 +35,7 @@ public class TeacherService {
             AppUserRepository appUserRepository,
             CourseRepository courseRepository,
             GradeRepository gradeRepository,
+            RoleRepository roleRepository,
             StudentRepository studentRepository,
             TeacherRepository teacherRepository,
             TeacherMapper teacherMapper,
@@ -41,6 +43,7 @@ public class TeacherService {
         this.appUserRepository = appUserRepository;
         this.courseRepository = courseRepository;
         this.gradeRepository = gradeRepository;
+        this.roleRepository = roleRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.teacherMapper = teacherMapper;
@@ -57,6 +60,10 @@ public class TeacherService {
 
     public Teacher createTeacher(TeacherPostDto teacherPostDto)
             throws ElementTakenException, ElementNotFoundException {
+        String teacherRoleName = "TEACHER";
+        Role teacherRole = roleRepository.findByRoleName(teacherRoleName)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No role named " + teacherRoleName));
         AppUser appUser = appUserRepository.findByUsername(teacherPostDto.getUsername())
                         .orElseThrow(() -> new ElementNotFoundException(
                                 "No user with username: " + teacherPostDto.getUsername()));
@@ -66,6 +73,8 @@ public class TeacherService {
         if (optionalTeacher.isPresent()) {
             throw new ElementTakenException("There is already a teacher bounded to this user");
         }
+        appUser.addRole(teacherRole);
+        appUserRepository.save(appUser);
 
         return teacherRepository.save(new Teacher(appUser));
     }

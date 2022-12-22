@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import srau.api.domain.Course;
 import srau.api.domain.Grade;
 import srau.api.domain.Student;
+import srau.api.exception.ElementNotFoundException;
 import srau.api.mapstruct.dto.GradeGetDto;
 import srau.api.mapstruct.dto.GradePostDto;
 import srau.api.mapstruct.mapper.GradeMapper;
@@ -34,10 +35,24 @@ public class GradeService {
         this.gradeMapper = gradeMapper;
     }
 
-    public List<GradeGetDto> getGrades() {
-        List<Grade> grades = gradeRepository.findAll();
+    public List<GradeGetDto> getStudentGrades(Long studentId) throws ElementNotFoundException {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "Student with id " + studentId + " does not exists"));
 
-        return grades
+        return student
+                .getGrades()
+                .stream()
+                .map(gradeMapper::gradeToGradeGetDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<GradeGetDto> getCourseGrades(Long courseId) throws ElementNotFoundException {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "Course with id " + courseId + "does not exists"));
+        return course
+                .getGrades()
                 .stream()
                 .map(gradeMapper::gradeToGradeGetDto)
                 .collect(Collectors.toList());

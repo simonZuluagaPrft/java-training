@@ -52,11 +52,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication auth) throws IOException, ServletException {
         String token = JWT.create()
                 .withSubject(((User) auth.getPrincipal()).getUsername())
+                .withClaim("roles", auth.getAuthorities().toString())
                 .withExpiresAt(
                         new Date(System.currentTimeMillis() + AuthenticationConfigConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(AuthenticationConfigConstants.SECRET.getBytes()));
-        response.addHeader(
-                AuthenticationConfigConstants.HEADER_STRING,
-                AuthenticationConfigConstants.TOKEN_PREFIX + token);
+//        Send token inside header:
+//        response.addHeader(
+//                AuthenticationConfigConstants.HEADER_STRING,
+//                AuthenticationConfigConstants.TOKEN_PREFIX + token);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(
+                "{\"" + AuthenticationConfigConstants.HEADER_STRING + "\":\"" + AuthenticationConfigConstants.TOKEN_PREFIX + token + "\"}"
+        );
     }
 }

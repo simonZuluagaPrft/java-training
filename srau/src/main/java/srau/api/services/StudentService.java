@@ -3,10 +3,7 @@ package srau.api.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import srau.api.domain.AppUser;
-import srau.api.domain.Grade;
-import srau.api.domain.Lecture;
-import srau.api.domain.Student;
+import srau.api.domain.*;
 import srau.api.exception.ElementNotFoundException;
 import srau.api.exception.ElementTakenException;
 import srau.api.mapstruct.dto.*;
@@ -15,6 +12,7 @@ import srau.api.mapstruct.mapper.StudentMapper;
 import srau.api.mapstruct.mapper.SubjectMapper;
 import srau.api.repositories.AppUserRepository;
 import srau.api.repositories.GradeRepository;
+import srau.api.repositories.RoleRepository;
 import srau.api.repositories.StudentRepository;
 
 import java.time.DayOfWeek;
@@ -27,6 +25,7 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final AppUserRepository appUserRepository;
     private final GradeRepository gradeRepository;
+    private final RoleRepository roleRepository;
     private final StudentRepository studentRepository;
     private final CourseMapper courseMapper;
     private final StudentMapper studentMapper;
@@ -36,12 +35,14 @@ public class StudentService {
     public StudentService(
             AppUserRepository appUserRepository,
             GradeRepository gradeRepository,
+            RoleRepository roleRepository,
             StudentRepository studentRepository,
             CourseMapper courseMapper,
             StudentMapper studentMapper,
             SubjectMapper subjectMapper) {
         this.appUserRepository = appUserRepository;
         this.gradeRepository = gradeRepository;
+        this.roleRepository = roleRepository;
         this.studentRepository = studentRepository;
         this.courseMapper = courseMapper;
         this.studentMapper = studentMapper;
@@ -55,8 +56,13 @@ public class StudentService {
                 .map(studentMapper::studentToStudentGetDto)
                 .collect(Collectors.toList());
     }
+
     public Student createStudent(StudentPostDto studentPostDto)
             throws ElementTakenException, ElementNotFoundException {
+        String studentRoleName = "STUDENT";
+        Role studentRole = roleRepository.findByRoleName(studentRoleName)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No role named " + studentRoleName));
         AppUser appUser = appUserRepository.findByUsername(studentPostDto.getUsername())
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No user with username: " + studentPostDto.getUsername()));
@@ -66,6 +72,8 @@ public class StudentService {
         if (optionalStudent.isPresent()) {
             throw new ElementTakenException("There is already a student bounded to this user");
         }
+        appUser.addRole(studentRole);
+        appUserRepository.save(appUser);
 
         return studentRepository.save(new Student(appUser));
     }

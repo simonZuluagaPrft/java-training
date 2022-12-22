@@ -25,6 +25,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, AuthenticationConfigConstants.SIGN_UP_URL).permitAll()
+//                USER ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/user").permitAll()
+                .antMatchers("/api/v1/user/addRole").hasAuthority("ADMIN")
+                .antMatchers("/api/v1/user/**").hasAuthority("ADMIN")
+//                STUDENT ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/student").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/v1/student").hasAuthority("ADMIN")
+                .antMatchers("/api/v1/student/**").hasAnyAuthority("ADMIN", "STUDENT")
+//                TEACHER ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/teacher").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/v1/teacher").hasAuthority("ADMIN")
+                .antMatchers("/api/v1/teacher/**").hasAnyAuthority("ADMIN", "TEACHER")
+//                SUBJECT ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/subject").permitAll()
+                .antMatchers("/api/v1/subject").hasAuthority("ADMIN")
+//                COURSE ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/course").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/course/**").hasAnyAuthority("ADMIN", "TEACHER")
+                .antMatchers("/api/v1/course/**").hasAuthority("ADMIN")
+//                LECTURE ENDPOINT
+                .antMatchers(HttpMethod.GET, "/api/v1/lecture").permitAll()
+                .antMatchers("/api/v1/lecture/**").hasAuthority("ADMIN")
+//                GRADE ENDPOINT
+                .antMatchers("/api/v1/grade/student/**").permitAll()
+                .antMatchers("/api/v1/grade/**").hasAnyAuthority("ADMIN", "TEACHER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))

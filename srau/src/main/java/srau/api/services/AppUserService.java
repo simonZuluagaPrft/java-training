@@ -61,7 +61,7 @@ public class AppUserService {
 
     public AppUser createAppUser(AppUserPostDto appUserPostDto)
             throws ElementTakenException, ElementNotFoundException {
-        String BASE_ROLE_ROLENAME = "user";
+        String BASE_ROLE_ROLENAME = "USER";
         Role baseRole = roleRepository.findByRoleName(BASE_ROLE_ROLENAME)
                 .orElseThrow(() -> new ElementNotFoundException("Could not find base role"));
 
@@ -123,5 +123,17 @@ public class AppUserService {
         }
 
         appUserRepository.deleteById(userId);
+    }
+
+    public void addRoleToAppUser(Long userId, String roleName) throws ElementNotFoundException {
+        AppUser appUser = appUserRepository.findById(userId)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No user with id: " + userId));
+        Role role = roleRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new ElementNotFoundException(
+                        "No role named: " + roleName));
+
+        appUser.addRole(role);
+        appUserRepository.save(appUser);
     }
 }

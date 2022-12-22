@@ -61,17 +61,4 @@ public class AppUserController {
         appUserService.createAppUser(appUserPostDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-//    @PostMapping(path = "login")
-//    public ResponseEntity<String> login(@RequestBody @Valid AuthenticationRequest request) {
-////        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-////                request.getUsername(),
-////                request.getPassword()));
-////        final UserDetails userDetails = appUserService.loadUserByUsername(request.getUsername());
-////        if (userDetails != null) {
-////            return new ResponseEntity<>(jwtUtil.generateToken(userDetails), HttpStatus.OK);
-////        }
-//        System.out.println("HEYYY: " + request.getUsername() + " " + request.getPassword());
-//        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//    }
 }

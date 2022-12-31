@@ -36,7 +36,7 @@ public class SubjectService {
     }
 
     public SubjectGetDto getSubjectByName(String subjectName) throws ElementNotFoundException {
-        Subject subject = subjectRepository.findSubjectByName(subjectName)
+        Subject subject = subjectRepository.findByName(subjectName)
                 .orElseThrow(() -> new ElementNotFoundException(
                         "No subject with name: " + subjectName));
 
@@ -45,7 +45,7 @@ public class SubjectService {
 
     public Subject createSubject(SubjectPostDto subjectPostDto) throws ElementTakenException {
         Optional<Subject> subjectOptional = subjectRepository
-                .findSubjectByName(subjectPostDto.getName());
+                .findByName(subjectPostDto.getName());
 
         if (subjectOptional.isPresent()) {
             throw new ElementTakenException("Name taken");
@@ -66,7 +66,7 @@ public class SubjectService {
                 !Objects.equals(subject.getName(), name)) {
 
             Optional<Subject> subjectOptional = subjectRepository
-                    .findSubjectByName(name);
+                    .findByName(name);
 
             if (subjectOptional.isPresent()) {
                 throw new ElementTakenException("Name taken");

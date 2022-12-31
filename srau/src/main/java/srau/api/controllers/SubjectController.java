@@ -41,7 +41,6 @@ public class SubjectController {
             @RequestBody @Valid SubjectPostDto subjectPostDto)
             throws ElementTakenException {
         subjectService.createSubject(subjectPostDto);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -53,7 +52,6 @@ public class SubjectController {
             @RequestParam(required = false) String email)
             throws ElementNotFoundException, ElementTakenException {
         SubjectGetDto subjectGetDto = subjectService.updateSubject(subjectId, name, email);
-
         return new ResponseEntity<>(subjectGetDto, HttpStatus.OK);
     }
 
@@ -62,7 +60,6 @@ public class SubjectController {
     public ResponseEntity<HttpStatus> deleteSubject(@PathVariable("subjectId") Long subjectId)
             throws ElementNotFoundException {
         subjectService.deleteSubject(subjectId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
